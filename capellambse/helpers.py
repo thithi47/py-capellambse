@@ -7,11 +7,14 @@ from __future__ import annotations
 import collections
 import collections.abc as cabc
 import functools
+import hashlib
 import html
 import importlib.resources as imr
 import itertools
 import math
 import operator
+import os
+import os.path
 import pathlib
 import re
 import typing as t
@@ -114,6 +117,20 @@ def normalize_pure_path(
             parts.append(i)
 
     return pathlib.PurePosixPath(*parts)
+
+
+def hashslug(path: str | os.PathLike) -> str:
+    """Transform an arbitrary path into a hash/slug combination.
+
+    This can be used to generate unique local cache directory names for
+    arbitrary URLs.
+    """
+    slug_pattern = '[\x00-\x1F\x7F"*/:<>?\\|]+'
+    path_hash = hashlib.sha256(
+        str(path).encode("utf-8", errors="surrogatepass")
+    ).hexdigest()
+    path_slug = re.sub(slug_pattern, "-", str(path))
+    return os.path.join(path_hash, path_slug)
 
 
 # Text processing and rendering

@@ -94,6 +94,7 @@ svgdiagram = "capellambse.model.diagram:convert_svgdiagram"
 [project.entry-points."capellambse.filehandler"]
 file = "capellambse.filehandler.local:LocalFileHandler"
 git = "capellambse.filehandler.git:GitFileHandler"
+svn = "capellambse.filehandler.svn:SubversionFileHandler"
 http = "capellambse.filehandler.http:HTTPFileHandler"
 https = "capellambse.filehandler.http:HTTPFileHandler"
 

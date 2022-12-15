@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import collections.abc as cabc
 import functools
-import hashlib
 import io
 import itertools
 import logging
@@ -680,16 +679,10 @@ class GitFileHandler(FileHandler):
         self.cache_dir = path.resolve()
 
     def __init_cache_dir_remote(self) -> None:
-        slug_pattern = '[\x00-\x1F\x7F"*/:<>?\\|]+'
-        path_hash = hashlib.sha256(
-            str(self.path).encode("utf-8", errors="surrogatepass")
-        ).hexdigest()
-        path_slug = re.sub(slug_pattern, "-", str(self.path))
         self.cache_dir = pathlib.Path(
             capellambse.dirs.user_cache_dir,
             "models",
-            path_hash,
-            path_slug,
+            capellambse.helpers.hashslug(self.path),
         )
 
         if self.cache_dir.exists() and self.disable_cache:
