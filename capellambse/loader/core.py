@@ -132,7 +132,12 @@ class ResourceLocationManager(dict):
 
 
 class ModelFile:
-    """Represents a single file in the model (i.e. a fragment)."""
+    """Represents a single file in the model (i.e. a fragment).
+
+    This class loads the entire XML tree into memory. This makes it
+    unsuitable for large trees with only small interesting segments,
+    like ``.aird`` files. See :class:`VisualFile` for an alternative.
+    """
 
     __xtypecache: dict[str, set[etree._Element]]
     __idcache: dict[str, etree._Element]
@@ -279,6 +284,98 @@ class ModelFile:
         return self.__hrefsources.get(element_id)
 
 
+class VisualFile:
+    """Represents a visual (AIRD) fragment.
+
+    Visual fragments can rapidly grow very large, which makes it
+    impractical to hold them in memory entirely all the time. This
+    specialized class works similar to :class:`ModelFile`. However, it
+    only keeps the central index in memory, and only loads and parses
+    other data on request.
+    """
+
+    fragment_type: t.Final = FragmentType.VISUAL
+    root: t.Final = etree.Element("xmi:XMI", nsmap=_n.NAMESPACES)
+
+    def __init__(
+        self,
+        filename: pathlib.PurePosixPath,
+        handler: filehandler.FileHandler,
+    ) -> None:
+        self.filename = filename
+        self.filehandler = handler
+        if filename.suffix not in VISUAL_EXTS:
+            raise ValueError(f"Bad filename for visual fragment: {filename}")
+
+        with handler.open(filename) as f:
+            parser = etree.iterparse(f)
+            for _, element in parser:
+                parent = element.getparent()
+                if parent is None or parent.getparent() is not None:
+                    continue
+
+                if element.tag == f"{{{_n.NAMESPACES['viewpoint']}}}DAnalysis":
+                    self.__analysis = element
+                    break
+                parent.remove(element)
+            else:
+                raise RuntimeError(
+                    "Broken XML: No 'viewpoint:DAnalysis' element found"
+                )
+            self.__analysis.getparent().remove(self.__analysis)
+
+    def __getitem__(self, key: str) -> etree._Element:
+        # TODO Return a diagram root element if it's found in this fragment
+        raise KeyError(key)
+
+    def referenced_files(self) -> cabc.Iterator[str]:
+        for i in self.__analysis:
+            if i.tag == "semanticResources":
+                yield i.text
+            elif i.tag == "referencedAnalysis" and (href := i.get("href")):
+                yield href.split("#", maxsplit=1)[0]
+
+    def enumerate_uuids(self) -> set[str]:
+        """Enumerate all UUIDs used in this fragment."""
+        return set()
+
+    def idcache_index(self, subtree: etree._Element) -> None:
+        """Index the IDs of ``subtree``."""
+        raise NotImplementedError("Cannot modify visual fragments")
+
+    def idcache_remove(self, source: str | etree._Element) -> None:
+        """Remove the ID or all IDs below the source from the ID cache."""
+        raise NotImplementedError("Cannot modify visual fragments")
+
+    def idcache_rebuild(self) -> None:
+        """Invalidate and rebuild this file's ID cache."""
+        # Nothing to do
+
+    def idcache_reserve(self, new_id: str) -> None:
+        """Reserve the given ID for an element to be inserted later."""
+        raise NotImplementedError("Cannot modify visual fragments")
+
+    def iterall_xt(
+        self, xtypes: cabc.Container[str]
+    ) -> cabc.Iterator[etree._Element]:
+        """Iterate over all elements in this tree by ``xsi:type``."""
+        del xtypes
+        yield from ()
+
+    def write_xml(
+        self,
+        filename: pathlib.PurePosixPath,
+        encoding: str = "utf-8",
+    ) -> None:
+        """Do nothing."""
+        del filename, encoding
+
+    # pylint: disable-next=useless-return
+    def unfollow_href(self, element_id: str) -> etree._Element | None:
+        del element_id
+        return None
+
+
 class MelodyLoader:
     """Facilitates extensive access to Polarsys / Capella projects."""
 
@@ -357,7 +454,7 @@ class MelodyLoader:
         if self.entrypoint.suffix != ".aird":
             raise ValueError("Invalid entrypoint, specify the ``.aird`` file")
 
-        self.trees: dict[pathlib.PurePosixPath, ModelFile] = {}
+        self.trees: dict[pathlib.PurePosixPath, VisualFile | ModelFile] = {}
         self.__load_referenced_files(
             pathlib.PurePosixPath("\0", self.entrypoint)
         )
@@ -408,11 +505,17 @@ class MelodyLoader:
 
         handler = self.resources[resource_path.parts[0]]
         filename = pathlib.PurePosixPath(*resource_path.parts[1:])
-        frag = ModelFile(
-            filename, handler, ignore_uuid_dups=self.__ignore_uuid_dups
-        )
+        frag: VisualFile | ModelFile
+        if filename.suffix in VISUAL_EXTS:
+            frag = VisualFile(filename, handler)
+            refs = list(frag.referenced_files())
+        else:
+            frag = ModelFile(
+                filename, handler, ignore_uuid_dups=self.__ignore_uuid_dups
+            )
+            refs = []
         self.trees[resource_path] = frag
-        for ref in _find_refs(frag.root):
+        for ref in refs:
             ref_name = helpers.normalize_pure_path(
                 _unquote_ref(ref), base=resource_path.parent
             )
@@ -776,7 +879,7 @@ class MelodyLoader:
         """
         xtset = self._nonempty_hashset(xtypes)
         if trees is None:
-            files: cabc.Iterable[ModelFile] = self.trees.values()
+            files: cabc.Iterable[VisualFile | ModelFile] = self.trees.values()
         else:
             files = (v for k, v in self.trees.items() if k in trees)
         return itertools.chain.from_iterable(
@@ -1012,7 +1115,7 @@ class MelodyLoader:
         def find_trees(
             from_element: etree._Element | None,
             fragment: pathlib.PurePosixPath | None,
-        ) -> cabc.Iterable[ModelFile]:
+        ) -> cabc.Iterable[VisualFile | ModelFile]:
             if fragment and from_element is None:
                 return (
                     v for k, v in self.trees.items() if k.name == fragment.name
@@ -1112,7 +1215,7 @@ class MelodyLoader:
 
     def _find_fragment(
         self, element: etree._Element
-    ) -> tuple[pathlib.PurePosixPath, ModelFile]:
+    ) -> tuple[pathlib.PurePosixPath, VisualFile | ModelFile]:
         root = collections.deque(
             itertools.chain([element], element.iterancestors()), 1
         )[0]
