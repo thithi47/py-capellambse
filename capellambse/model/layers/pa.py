@@ -84,7 +84,7 @@ class PhysicalComponent(cs.Component):
     ) -> c.ElementList[PhysicalComponent]:
         items = [
             cmp.type._element
-            for part in self.parts
+            for part in self.representing_parts
             for cmp in part.deployed_parts
         ]
         return c.ElementList(self._model, items, PhysicalComponent)

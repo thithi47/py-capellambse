@@ -1265,18 +1265,19 @@ class ReferenceSearchingAccessor(PhysicalAccessor[T]):
         return self._make_list(obj, matches)
 
 
-class RoleTagAccessor(PhysicalAccessor):
+class RoleTagAccessor(DirectProxyAccessor[T]):
     __slots__ = ("role_tag",)
 
     def __init__(
         self,
         role_tag: str,
+        class_: type[T] | None = None,
         *,
         aslist: type[element.ElementList[T]] | None = None,
         list_extra_args: dict[str, t.Any] | None = None,
     ) -> None:
         super().__init__(
-            element.GenericElement,
+            class_ or element.GenericElement,
             (),
             aslist=aslist,
             list_extra_args=list_extra_args,
@@ -1289,11 +1290,47 @@ class RoleTagAccessor(PhysicalAccessor):
             return self
 
         elts = list(obj._element.iterchildren(self.role_tag))
+        if self.class_ is not element.GenericElement:
+            xtype = build_xtype(self.class_)
+            elts = [elt for elt in elts if elt.get(helpers.ATT_XT) == xtype]
+
         rv = self._make_list(obj, elts)
         if obj._constructed:
             sys.audit("capellambse.read_attribute", obj, self.__name__, rv)
             sys.audit("capellambse.getattr", obj, self.__name__, rv)
         return rv
+
+    def create(
+        self,
+        elmlist: element.GenericElement | ElementListCouplingMixin,
+        /,
+        *type_hints: str | None,
+        **kw: t.Any,
+    ) -> T:
+        if self.aslist is None:
+            raise TypeError("Cannot create multiple of this object")
+
+        assert isinstance(elmlist, ElementListCouplingMixin)
+        assert isinstance(elmlist._parent, element.GenericElement)
+
+        if not type_hints:
+            if not self.class_:
+                raise ValueError("Need type hint for creating object")
+            type_hints = (self.class_.__name__,)
+
+        kw["_xmltag"] = self.role_tag
+        return super().create(elmlist, *type_hints, **kw)
+
+    def insert(
+        self,
+        elmlist: ElementListCouplingMixin,
+        index: int,
+        value: element.ModelObject,
+    ) -> None:
+        if self.class_:
+            assert isinstance(value, self.class_)
+        assert value._element.tag == self.role_tag
+        super().insert(elmlist, index, value)
 
 
 def no_list(

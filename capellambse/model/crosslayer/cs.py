@@ -16,11 +16,13 @@ from __future__ import annotations
 import operator
 import typing as t
 
+from lxml import etree
+
 from .. import common as c
 from . import capellacommon, fa, information
 
 if t.TYPE_CHECKING:
-    pass
+    import capellambse
 
 XT_DEPLOY_LINK = (
     "org.polarsys.capella.core.data.pa.deployment:PartDeploymentLink"
@@ -35,6 +37,10 @@ class Part(c.GenericElement):
     type = c.AttrProxyAccessor(c.GenericElement, "abstractType")
 
     deployed_parts: c.Accessor
+
+    @property
+    def name(self) -> str:  # type: ignore[override]
+        return self.type.name
 
 
 @c.xtype_handler(None)
@@ -127,7 +133,9 @@ class Component(c.GenericElement):
     )
     ports = c.DirectProxyAccessor(fa.ComponentPort, aslist=c.ElementList)
     physical_ports = c.DirectProxyAccessor(PhysicalPort, aslist=c.ElementList)
-    parts = c.RoleTagAccessor("ownedFeatures", aslist=c.ElementList)
+    parts = c.RoleTagAccessor[Part](
+        "ownedFeatures", Part, aslist=c.ElementList
+    )
     representing_parts = c.ReferenceSearchingAccessor(
         Part, "type", aslist=c.ElementList
     )
@@ -144,6 +152,17 @@ class Component(c.GenericElement):
         aslist=c.ElementList,
     )
 
+    def __init__(
+        self,
+        model: capellambse.MelodyModel,
+        parent: etree._Element,
+        /,
+        **kw: t.Any,
+    ) -> None:
+        super().__init__(model, parent, **kw)
+
+        self.parent.parts.create(type=self)
+
 
 @c.xtype_handler(None)
 class ComponentRealization(c.GenericElement):
@@ -158,7 +177,7 @@ class ComponentPkg(c.GenericElement):
     exchanges = c.DirectProxyAccessor(
         fa.ComponentExchange, aslist=c.ElementList
     )
-    parts = c.RoleTagAccessor("ownedParts", aslist=c.ElementList)
+    parts = c.RoleTagAccessor[Part]("ownedParts", Part, aslist=c.ElementList)
     state_machines = c.DirectProxyAccessor(
         capellacommon.StateMachine, aslist=c.ElementList
     )
