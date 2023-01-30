@@ -213,20 +213,23 @@ class GenericElement:
         parent.append(self._element)
         try:
             for key, val in kw.items():
+                prop = getattr(type(self), key)
+                is_acc_or_attr_prop = isinstance(
+                    prop, (accessors.Accessor, properties.AttributeProperty)
+                )
                 if key == "xtype":
                     self._element.set(helpers.ATT_XT, val)
                     self._model._loader.add_namespace(
                         parent, val.split(":", maxsplit=1)[0]
                     )
-                elif not isinstance(
-                    getattr(type(self), key),
-                    (accessors.Accessor, properties.AttributeProperty),
+                elif is_acc_or_attr_prop or (
+                    isinstance(prop, property) and not self._constructed
                 ):
+                    setattr(self, key, val)
+                else:
                     raise TypeError(
                         f"Cannot set {key!r} on {type(self).__name__}"
                     )
-                else:
-                    setattr(self, key, val)
             self._model._loader.idcache_index(self._element)
         except BaseException:
             parent.remove(self._element)

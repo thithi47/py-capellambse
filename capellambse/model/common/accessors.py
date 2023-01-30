@@ -22,6 +22,7 @@ __all__ = [
     "ReferenceSearchingAccessor",
     "ElementListCouplingMixin",
     "RoleTagAccessor",
+    "InvalidChangeRequest",
 ]
 
 import abc
@@ -44,6 +45,10 @@ _NOT_SPECIFIED = object()
 "Used to detect unspecified optional arguments"
 
 _C = t.TypeVar("_C", bound="ElementListCouplingMixin")
+
+
+class InvalidChangeRequest(Exception):
+    """Raised when a change request is invalid."""
 
 
 class NonUniqueMemberError(ValueError):

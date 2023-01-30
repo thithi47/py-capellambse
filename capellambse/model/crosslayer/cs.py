@@ -38,9 +38,29 @@ class Part(c.GenericElement):
 
     deployed_parts: c.Accessor
 
-    @property
-    def name(self) -> str:  # type: ignore[override]
+    @property  # type: ignore[override]
+    def name(self) -> str:
+        """Return the name of the Part."""
         return self.type.name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        if not isinstance(value, str):
+            raise TypeError("Name has to be a string")
+
+        if self._constructed:
+            raise c.InvalidChangeRequest(
+                "This won't have any effect. The name is inferred from "
+                "`.type`."
+            )
+
+        if not value:
+            try:
+                del self._element.attrib["name"]
+            except KeyError:
+                pass
+        else:
+            self._element.attrib["name"] = value
 
 
 @c.xtype_handler(None)
@@ -161,7 +181,7 @@ class Component(c.GenericElement):
     ) -> None:
         super().__init__(model, parent, **kw)
 
-        self.parent.parts.create(type=self)
+        self.parent.parts.create(name=self.name, type=self)
 
 
 @c.xtype_handler(None)
