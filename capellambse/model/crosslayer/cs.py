@@ -11,11 +11,16 @@ Composite Structure object-relations map (ontology):
 
 .. diagram:: [CDB] CompositeStructure [Ontology]
 """
+from __future__ import annotations
 
 import operator
+import typing as t
 
 from .. import common as c
 from . import capellacommon, fa, information
+
+if t.TYPE_CHECKING:
+    pass
 
 XT_DEPLOY_LINK = (
     "org.polarsys.capella.core.data.pa.deployment:PartDeploymentLink"
@@ -26,8 +31,6 @@ XT_PHYS_PATH_INV = "org.polarsys.capella.core.data.cs:PhysicalPathInvolvement"
 @c.xtype_handler(None)
 class Part(c.GenericElement):
     """A representation of a physical component."""
-
-    _xmltag = "ownedParts"
 
     type = c.AttrProxyAccessor(c.GenericElement, "abstractType")
 
@@ -124,7 +127,10 @@ class Component(c.GenericElement):
     )
     ports = c.DirectProxyAccessor(fa.ComponentPort, aslist=c.ElementList)
     physical_ports = c.DirectProxyAccessor(PhysicalPort, aslist=c.ElementList)
-    parts = c.ReferenceSearchingAccessor(Part, "type", aslist=c.ElementList)
+    parts = c.RoleTagAccessor("ownedFeatures", aslist=c.ElementList)
+    representing_parts = c.ReferenceSearchingAccessor(
+        Part, "type", aslist=c.ElementList
+    )
     physical_paths = c.DirectProxyAccessor(PhysicalPath, aslist=c.ElementList)
     physical_links = c.DirectProxyAccessor(PhysicalLink, aslist=c.ElementList)
     exchanges = c.DirectProxyAccessor(
@@ -144,6 +150,18 @@ class ComponentRealization(c.GenericElement):
     """A realization that links to a component."""
 
     _xmltag = "ownedComponentRealizations"
+
+
+class ComponentPkg(c.GenericElement):
+    """An abstract class for Component packages."""
+
+    exchanges = c.DirectProxyAccessor(
+        fa.ComponentExchange, aslist=c.ElementList
+    )
+    parts = c.RoleTagAccessor("ownedParts", aslist=c.ElementList)
+    state_machines = c.DirectProxyAccessor(
+        capellacommon.StateMachine, aslist=c.ElementList
+    )
 
 
 c.set_accessor(

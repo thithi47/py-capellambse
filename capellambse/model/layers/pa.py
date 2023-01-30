@@ -11,7 +11,7 @@ import operator
 
 from .. import common as c
 from .. import crosslayer, diagram, modeltypes
-from ..crosslayer import capellacommon, cs, fa
+from ..crosslayer import cs, fa
 from . import la
 
 XT_ARCH = "org.polarsys.capella.core.data.pa:PhysicalArchitecture"
@@ -97,18 +97,12 @@ class PhysicalComponent(cs.Component):
 
 
 @c.xtype_handler(XT_ARCH)
-class PhysicalComponentPkg(c.GenericElement):
+class PhysicalComponentPkg(cs.ComponentPkg):
     """A logical component package."""
 
     _xmltag = "ownedPhysicalComponentPkg"
 
     components = c.DirectProxyAccessor(PhysicalComponent, aslist=c.ElementList)
-    exchanges = c.DirectProxyAccessor(
-        fa.ComponentExchange, aslist=c.ElementList
-    )
-    state_machines = c.DirectProxyAccessor(
-        capellacommon.StateMachine, aslist=c.ElementList
-    )
 
     packages: c.Accessor
 

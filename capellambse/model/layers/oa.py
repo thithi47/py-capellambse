@@ -214,18 +214,17 @@ class CommunicationMean(fa.AbstractExchange):
 
 
 @c.xtype_handler(XT_ARCH)
-class EntityPkg(c.GenericElement):
+class EntityPkg(cs.ComponentPkg):
     """A package that holds operational entities."""
 
     _xmltag = "ownedEntityPkg"
 
     entities = c.DirectProxyAccessor(Entity, aslist=c.ElementList)
-    state_machines = c.DirectProxyAccessor(
-        capellacommon.StateMachine, aslist=c.ElementList
-    )
+    exchanges = c.DirectProxyAccessor[CommunicationMean](
+        CommunicationMean, aslist=c.ElementList
+    )  # type: ignore[assignment]
 
     packages: c.Accessor
-    exchanges = c.DirectProxyAccessor(CommunicationMean, aslist=c.ElementList)
 
 
 @c.xtype_handler(None)

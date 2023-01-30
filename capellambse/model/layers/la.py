@@ -77,18 +77,12 @@ class LogicalComponent(cs.Component):
 
 
 @c.xtype_handler(XT_ARCH)
-class LogicalComponentPkg(c.GenericElement):
+class LogicalComponentPkg(cs.ComponentPkg):
     """A logical component package."""
 
     _xmltag = "ownedLogicalComponentPkg"
 
     components = c.DirectProxyAccessor(LogicalComponent, aslist=c.ElementList)
-    state_machines = c.DirectProxyAccessor(
-        capellacommon.StateMachine, aslist=c.ElementList
-    )
-    exchanges = c.DirectProxyAccessor(
-        fa.ComponentExchange, aslist=c.ElementList
-    )
 
     packages: c.Accessor
 

@@ -65,15 +65,12 @@ class SystemComponent(cs.Component):
 
 
 @c.xtype_handler(XT_ARCH)
-class SystemComponentPkg(c.GenericElement):
+class SystemComponentPkg(cs.ComponentPkg):
     """A system component package."""
 
     _xmltag = "ownedSystemComponentPkg"
 
     components = c.DirectProxyAccessor(SystemComponent, aslist=c.ElementList)
-    state_machines = c.DirectProxyAccessor(
-        capellacommon.StateMachine, aslist=c.ElementList
-    )
 
     packages: c.Accessor
 
