@@ -222,7 +222,7 @@ class EntityPkg(cs.ComponentPkg):
     entities = c.DirectProxyAccessor(Entity, aslist=c.ElementList)
     exchanges = c.DirectProxyAccessor[CommunicationMean](
         CommunicationMean, aslist=c.ElementList
-    )  # type: ignore[assignment]
+    )
 
     packages: c.Accessor
 

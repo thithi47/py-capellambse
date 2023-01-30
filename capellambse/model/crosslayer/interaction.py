@@ -81,6 +81,14 @@ class EventReceiptOperation(EventOperation):
     """An event-receipt operation."""
 
 
+class InteractionFragment(c.GenericElement):
+    """Abstract super class of all interaction fragments in a Scenario."""
+
+    covered = c.AttrProxyAccessor[c.GenericElement](
+        None, "coveredInstanceRoles", aslist=c.MixedElementList
+    )
+
+
 @c.xtype_handler(None)
 class Scenario(c.GenericElement):
     """A scenario that holds instance roles."""
@@ -89,20 +97,16 @@ class Scenario(c.GenericElement):
         InstanceRole, aslist=c.ElementList
     )
     messages = c.DirectProxyAccessor(SequenceMessage, aslist=c.ElementList)
-    events = c.RoleTagAccessor("ownedEvents", aslist=c.MixedElementList)
-    fragments = c.RoleTagAccessor(
-        "ownedInteractionFragments", aslist=c.MixedElementList
+    events = c.RoleTagAccessor[EventOperation](
+        "ownedEvents", aslist=c.MixedElementList  # type: ignore[arg-type]
     )
-    time_lapses = c.RoleTagAccessor(
-        "ownedTimeLapses", aslist=c.MixedElementList
+    fragments = c.RoleTagAccessor[InteractionFragment](
+        "ownedInteractionFragments",
+        aslist=c.MixedElementList,  # type: ignore[arg-type]
     )
-
-
-class InteractionFragment(c.GenericElement):
-    """Abstract super class of all interaction fragments in a Scenario."""
-
-    covered = c.AttrProxyAccessor[c.GenericElement](
-        None, "coveredInstanceRoles", aslist=c.MixedElementList
+    time_lapses = c.RoleTagAccessor[Event](
+        "ownedTimeLapses",
+        aslist=c.MixedElementList,  # type: ignore[arg-type]
     )
 
 

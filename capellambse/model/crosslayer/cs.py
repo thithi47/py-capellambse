@@ -154,7 +154,7 @@ class Component(c.GenericElement):
     ports = c.DirectProxyAccessor(fa.ComponentPort, aslist=c.ElementList)
     physical_ports = c.DirectProxyAccessor(PhysicalPort, aslist=c.ElementList)
     parts = c.RoleTagAccessor[Part](
-        "ownedFeatures", Part, aslist=c.ElementList
+        "ownedFeatures", Part, aslist=c.ElementList[Part]
     )
     representing_parts = c.ReferenceSearchingAccessor(
         Part, "type", aslist=c.ElementList
@@ -197,7 +197,9 @@ class ComponentPkg(c.GenericElement):
     exchanges = c.DirectProxyAccessor(
         fa.ComponentExchange, aslist=c.ElementList
     )
-    parts = c.RoleTagAccessor[Part]("ownedParts", Part, aslist=c.ElementList)
+    parts = c.RoleTagAccessor[Part](
+        "ownedParts", Part, aslist=c.ElementList[Part]
+    )
     state_machines = c.DirectProxyAccessor(
         capellacommon.StateMachine, aslist=c.ElementList
     )

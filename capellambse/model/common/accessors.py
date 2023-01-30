@@ -1276,13 +1276,13 @@ class RoleTagAccessor(DirectProxyAccessor[T]):
     def __init__(
         self,
         role_tag: str,
-        class_: type[T] | None = None,
+        class_: type[T] | type[element.GenericElement] | None = None,
         *,
         aslist: type[element.ElementList[T]] | None = None,
         list_extra_args: dict[str, t.Any] | None = None,
     ) -> None:
         super().__init__(
-            class_ or element.GenericElement,
+            class_ or element.GenericElement,  # type:ignore[arg-type]
             (),
             aslist=aslist,
             list_extra_args=list_extra_args,
