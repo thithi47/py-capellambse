@@ -581,6 +581,7 @@ def test_deleting_objects_fires_one_delete_event(
     events = [i for i in audit_events if i[0] == "capellambse.delete"]
     assert len(events) == 1
     event = events[0]
-    _, ev_obj, ev_attr, _ = event
+    _, ev_obj, ev_attr, ev_index = event
     assert ev_obj == obj
     assert ev_attr == attr
+    assert ev_index == 0
