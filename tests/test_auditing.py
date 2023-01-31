@@ -531,3 +531,56 @@ def test_creating_components_fires_exactly_two_create_events(
         assert ev[0] == obj
         assert ev[1] == attr
         assert ev[2] == new_obj
+
+
+@pytest.mark.parametrize(
+    ["obj_id", "attr", "accessor_type"],
+    [
+        pytest.param(
+            "0d2edb8f-fa34-4e73-89ec-fb9a63001440",
+            "components",
+            common.DirectProxyAccessor,
+            id="DirectProxyAccessor",
+        ),
+        pytest.param(
+            "dfc4341d-253a-4ae9-8a30-63a9d9faca39",
+            "involved_functions",
+            common.LinkAccessor,
+            id="LinkAccessor",
+        ),
+        pytest.param(
+            "6c48b9c5-0d43-4a43-9e9d-9559cb52c83e",
+            "entries",
+            common.AttrProxyAccessor,
+            id="AttrProxyAccessor",
+        ),
+        pytest.param(
+            "eeeb98a7-6063-4115-8b4b-40a51cc0df49",
+            "states",
+            common.RoleTagAccessor,
+            id="RoleTagAccessor",
+        ),
+    ],
+)
+def test_deleting_objects_fires_one_delete_event(
+    model_5_2: capellambse.MelodyModel,
+    audit_events: list[tuple[t.Any, ...]],
+    obj_id: str,
+    attr: str,
+    accessor_type: type[t.Any],
+) -> None:
+    obj = model_5_2.by_uuid(obj_id)
+    descriptor = getattr(type(obj), attr, None)
+    assert descriptor is not None, f"{type(obj).__name__} has no {attr}"
+    assert isinstance(descriptor, accessor_type), "Bad descriptor type"
+    assert (list := getattr(obj, attr)), "Elementlist is empty"
+    audit_events.clear()
+
+    del list[0]
+
+    events = [i for i in audit_events if i[0] == "capellambse.delete"]
+    assert len(events) == 1
+    event = events[0]
+    _, ev_obj, ev_attr, _ = event
+    assert ev_obj == obj
+    assert ev_attr == attr
