@@ -203,10 +203,10 @@ class GenericElement:
         if self._xmltag is None:
             try:
                 self._xmltag = kw.pop("_xmltag")
-            except KeyError as error:
+            except KeyError:
                 raise TypeError(
                     f"Cannot instantiate {type(self).__name__} directly"
-                ) from error
+                ) from None
         self._constructed = False
         self._model = model
         self._element: etree._Element = etree.Element(self._xmltag)

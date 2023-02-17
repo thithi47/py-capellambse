@@ -80,7 +80,7 @@ def test_PhysicalLink_setting_source_and_target(model: MelodyModel):
     assert target_pp == link.target
 
 
-def test_Component_parts(model: MelodyModel):
+def test_Components_have_parts(model: MelodyModel):
     comp = model.by_uuid(HOGWARTS_UUID)
 
     for part in comp.parts:
@@ -110,7 +110,7 @@ def test_component_creation_also_creates_a_part(model: MelodyModel, uuid: str):
     assert part.type == comp
 
 
-def test_component_modification_also_modifies_parts(model: MelodyModel):
+def test_changed_Component_name_is_copied_to_the_parts(model: MelodyModel):
     name = "Test"
 
     comp = model.by_uuid(HOGWARTS_UUID)
@@ -118,5 +118,4 @@ def test_component_modification_also_modifies_parts(model: MelodyModel):
     comp.name = name
     comp.allocated_functions.append(model.la.root_function)
 
-    assert (part := comp.representing_parts[0]).name == name
-    assert part.type.allocated_functions == comp.allocated_functions
+    assert all(i.name == name for i in comp.representing_parts)
