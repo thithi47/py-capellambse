@@ -49,7 +49,7 @@ class Part(c.GenericElement):
             raise TypeError("Name has to be a string")
 
         if self._constructed:
-            raise c.InvalidChangeRequest(
+            raise c.InvalidModificationError(
                 "This won't have any effect. The name is inferred from "
                 "`.type`."
             )
@@ -153,9 +153,7 @@ class Component(c.GenericElement):
     )
     ports = c.DirectProxyAccessor(fa.ComponentPort, aslist=c.ElementList)
     physical_ports = c.DirectProxyAccessor(PhysicalPort, aslist=c.ElementList)
-    parts = c.RoleTagAccessor[Part](
-        "ownedFeatures", Part, aslist=c.ElementList  # type: ignore[arg-type]
-    )
+    parts = c.RoleTagAccessor("ownedFeatures", Part, aslist=c.ElementList)
     representing_parts = c.ReferenceSearchingAccessor(
         Part, "type", aslist=c.ElementList
     )
@@ -197,9 +195,7 @@ class ComponentPkg(c.GenericElement):
     exchanges = c.DirectProxyAccessor(
         fa.ComponentExchange, aslist=c.ElementList
     )
-    parts = c.RoleTagAccessor[Part](
-        "ownedParts", Part, aslist=c.ElementList  # type: ignore[arg-type]
-    )
+    parts = c.RoleTagAccessor("ownedParts", Part, aslist=c.ElementList)
     state_machines = c.DirectProxyAccessor(
         capellacommon.StateMachine, aslist=c.ElementList
     )

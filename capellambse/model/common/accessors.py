@@ -22,7 +22,7 @@ __all__ = [
     "ReferenceSearchingAccessor",
     "ElementListCouplingMixin",
     "RoleTagAccessor",
-    "InvalidChangeRequest",
+    "InvalidModificationError",
 ]
 
 import abc
@@ -47,8 +47,8 @@ _NOT_SPECIFIED = object()
 _C = t.TypeVar("_C", bound="ElementListCouplingMixin")
 
 
-class InvalidChangeRequest(Exception):
-    """Raised when a change request is invalid."""
+class InvalidModificationError(Exception):
+    """Raised when a modification would result in an invalid model."""
 
 
 class NonUniqueMemberError(ValueError):
@@ -1276,9 +1276,9 @@ class RoleTagAccessor(DirectProxyAccessor[T]):
     def __init__(
         self,
         role_tag: str,
-        class_: type[T] | type[element.GenericElement] | None = None,
+        class_: type[T] | None = None,
         *,
-        aslist: type[element.ElementList[T]] | None = None,
+        aslist: type[element.ElementList] | None = None,
         list_extra_args: dict[str, t.Any] | None = None,
     ) -> None:
         super().__init__(
@@ -1319,8 +1319,6 @@ class RoleTagAccessor(DirectProxyAccessor[T]):
         assert isinstance(elmlist._parent, element.GenericElement)
 
         if not type_hints:
-            if not self.class_:
-                raise ValueError("Need type hint for creating object")
             type_hints = (self.class_.__name__,)
 
         kw["_xmltag"] = self.role_tag

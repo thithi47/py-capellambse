@@ -35,7 +35,7 @@ class ValuePart(c.GenericElement):
     referenced_property = c.AttrProxyAccessor(
         c.GenericElement, "referencedProperty"
     )
-    value = c.RoleTagAccessor[LiteralValue]("ownedValue")
+    value = c.RoleTagAccessor("ownedValue", LiteralValue)
 
 
 @c.xtype_handler(None)

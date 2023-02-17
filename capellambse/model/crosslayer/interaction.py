@@ -97,16 +97,16 @@ class Scenario(c.GenericElement):
         InstanceRole, aslist=c.ElementList
     )
     messages = c.DirectProxyAccessor(SequenceMessage, aslist=c.ElementList)
-    events = c.RoleTagAccessor[EventOperation](
-        "ownedEvents", aslist=c.MixedElementList  # type: ignore[arg-type]
+    events = c.RoleTagAccessor(
+        "ownedEvents", EventOperation, aslist=c.MixedElementList
     )
-    fragments = c.RoleTagAccessor[InteractionFragment](
+    fragments = c.RoleTagAccessor(
         "ownedInteractionFragments",
-        aslist=c.MixedElementList,  # type: ignore[arg-type]
+        InteractionFragment,
+        aslist=c.MixedElementList,
     )
-    time_lapses = c.RoleTagAccessor[Event](
-        "ownedTimeLapses",
-        aslist=c.MixedElementList,  # type: ignore[arg-type]
+    time_lapses = c.RoleTagAccessor(
+        "ownedTimeLapses", Event, aslist=c.MixedElementList
     )
 
 

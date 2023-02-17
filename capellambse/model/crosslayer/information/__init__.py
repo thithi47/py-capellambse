@@ -116,14 +116,14 @@ class Property(c.GenericElement):
         "aggregationKind", modeltypes.AggregationKind, default="UNSET"
     )
     type = c.AttrProxyAccessor(c.GenericElement, "abstractType")
-    default_value = c.RoleTagAccessor[datavalue.LiteralValue](
-        "ownedDefaultValue"
+    default_value = c.RoleTagAccessor(
+        "ownedDefaultValue", datavalue.LiteralValue
     )
-    min = c.RoleTagAccessor[datavalue.LiteralValue]("ownedMinValue")
-    max = c.RoleTagAccessor[datavalue.LiteralValue]("ownedMaxValue")
-    null_value = c.RoleTagAccessor[datavalue.LiteralValue]("ownedNullValue")
-    min_card = c.RoleTagAccessor[datavalue.LiteralValue]("ownedMinCard")
-    max_card = c.RoleTagAccessor[datavalue.LiteralValue]("ownedMaxCard")
+    min = c.RoleTagAccessor("ownedMinValue", datavalue.LiteralValue)
+    max = c.RoleTagAccessor("ownedMaxValue", datavalue.LiteralValue)
+    null_value = c.RoleTagAccessor("ownedNullValue", datavalue.LiteralValue)
+    min_card = c.RoleTagAccessor("ownedMinCard", datavalue.LiteralValue)
+    max_card = c.RoleTagAccessor("ownedMaxCard", datavalue.LiteralValue)
     association = c.ReferenceSearchingAccessor(Association, "roles")
 
 
