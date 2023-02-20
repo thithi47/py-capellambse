@@ -25,7 +25,7 @@ XT_LA_COMP_REAL = (
 class PhysicalFunction(fa.Function):
     """A physical function on the Physical Architecture layer."""
 
-    _xmltag = "ownedPhysicalFunctions"
+    xmltag = "ownedPhysicalFunctions"
 
     owner = c.CustomAccessor(
         c.GenericElement,
@@ -44,7 +44,7 @@ class PhysicalFunction(fa.Function):
 class PhysicalFunctionPkg(c.GenericElement):
     """A logical component package."""
 
-    _xmltag = "ownedFunctionPkg"
+    xmltag = "ownedFunctionPkg"
 
     functions = c.DirectProxyAccessor(PhysicalFunction, aslist=c.ElementList)
 
@@ -55,7 +55,7 @@ class PhysicalFunctionPkg(c.GenericElement):
 class PhysicalComponent(cs.Component):
     """A physical component on the Physical Architecture layer."""
 
-    _xmltag = "ownedPhysicalComponents"
+    xmltag = "ownedPhysicalComponents"
 
     nature = c.EnumAttributeProperty("nature", modeltypes.Nature)
     kind = c.EnumAttributeProperty(
@@ -100,7 +100,7 @@ class PhysicalComponent(cs.Component):
 class PhysicalComponentPkg(cs.ComponentPkg):
     """A logical component package."""
 
-    _xmltag = "ownedPhysicalComponentPkg"
+    xmltag = "ownedPhysicalComponentPkg"
 
     components = c.DirectProxyAccessor(PhysicalComponent, aslist=c.ElementList)
 

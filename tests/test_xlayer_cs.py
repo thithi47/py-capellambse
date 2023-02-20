@@ -99,7 +99,7 @@ def test_Components_have_parts(model: MelodyModel):
 def test_component_creation_also_creates_a_part(model: MelodyModel, uuid: str):
     name = "Test"
     logical_parts = model.search("Part", below=model.la).by_name
-    assert name not in logical_parts, "Part already exists"  # type: ignore[operator]
+    assert name not in logical_parts, "Part already exists"
     obj = model.by_uuid(uuid)
 
     comp = obj.components.create(name=name)

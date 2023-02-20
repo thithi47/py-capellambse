@@ -152,7 +152,7 @@ class Exchange(c.GenericElement):
 class AbstractCapabilityExtend(Exchange):
     """An AbstractCapabilityExtend."""
 
-    _xmltag = "extends"
+    xmltag = "extends"
 
     source = c.ParentAccessor(c.GenericElement)
     target = c.AttrProxyAccessor(c.GenericElement, "extended")
@@ -162,7 +162,7 @@ class AbstractCapabilityExtend(Exchange):
 class AbstractCapabilityInclude(Exchange):
     """An AbstractCapabilityInclude."""
 
-    _xmltag = "includes"
+    xmltag = "includes"
 
     source = c.ParentAccessor(c.GenericElement)
     target = c.AttrProxyAccessor(c.GenericElement, "included")
@@ -172,7 +172,7 @@ class AbstractCapabilityInclude(Exchange):
 class AbstractCapabilityGeneralization(Exchange):
     """An AbstractCapabilityGeneralization."""
 
-    _xmltag = "superGeneralizations"
+    xmltag = "superGeneralizations"
 
     source = c.ParentAccessor(c.GenericElement)
     target = c.AttrProxyAccessor(c.GenericElement, "super")

@@ -93,7 +93,7 @@ class InterfacePkg(c.GenericElement):
 class PhysicalPort(c.GenericElement):
     """A physical port."""
 
-    _xmltag = "ownedFeatures"
+    xmltag = "ownedFeatures"
 
     owner = c.ParentAccessor(c.GenericElement)
 
@@ -120,7 +120,7 @@ class PhysicalLink(PhysicalPort):
 class PhysicalPath(c.GenericElement):
     """A physical path."""
 
-    _xmltag = "ownedPhysicalPath"
+    xmltag = "ownedPhysicalPath"
 
     involved_items = c.LinkAccessor[c.GenericElement](  # FIXME fill in tag
         None, XT_PHYS_PATH_INV, aslist=c.MixedElementList, attr="involved"
@@ -174,6 +174,7 @@ class Component(c.GenericElement):
         self,
         model: capellambse.MelodyModel,
         parent: etree._Element,
+        xmltag: str | None = None,
         /,
         **kw: t.Any,
     ) -> None:
@@ -186,7 +187,7 @@ class Component(c.GenericElement):
 class ComponentRealization(c.GenericElement):
     """A realization that links to a component."""
 
-    _xmltag = "ownedComponentRealizations"
+    xmltag = "ownedComponentRealizations"
 
 
 class ComponentPkg(c.GenericElement):

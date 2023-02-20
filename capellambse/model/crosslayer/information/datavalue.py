@@ -30,19 +30,19 @@ class LiteralStringValue(LiteralValue):
 class ValuePart(c.GenericElement):
     """A Value Part of a Complex Value."""
 
-    _xmltag = "ownedParts"
+    xmltag = "ownedParts"
 
     referenced_property = c.AttrProxyAccessor(
         c.GenericElement, "referencedProperty"
     )
-    value = c.RoleTagAccessor("ownedValue", LiteralValue)
+    value = c.RoleTagAccessor("ownedValue")
 
 
 @c.xtype_handler(None)
 class ComplexValue(c.GenericElement):
     """A Complex Value."""
 
-    _xmltag = "ownedDataValues"
+    xmltag = "ownedDataValues"
 
     type = c.AttrProxyAccessor(c.GenericElement, "abstractType")
     value_parts = c.DirectProxyAccessor(ValuePart, aslist=c.ElementList)
@@ -53,7 +53,7 @@ class ComplexValue(c.GenericElement):
 class EnumerationLiteral(c.GenericElement):
     """An EnumerationLiteral (proxy link)."""
 
-    _xmltag = "ownedLiterals"
+    xmltag = "ownedLiterals"
 
     name = c.AttributeProperty("name", returntype=str)
 

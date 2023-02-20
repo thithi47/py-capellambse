@@ -127,7 +127,7 @@ class GenericElement:
 
     _constructed: bool
     _required_attrs = frozenset({"uuid", "xtype"})
-    _xmltag: str | None = None
+    xmltag: str | None = None
 
     @property
     def progress_status(self) -> properties.AttributeProperty | str:
@@ -201,7 +201,7 @@ class GenericElement:
             raise TypeError(f"Missing required keyword arguments: {mattrs}")
 
         super().__init__()
-        xmltag = xmltag or self._xmltag
+        xmltag = xmltag or self.xmltag
         if xmltag is None:
             raise TypeError(
                 f"Cannot instantiate {type(self).__name__} directly"
