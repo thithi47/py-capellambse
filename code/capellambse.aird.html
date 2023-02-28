@@ -1,0 +1,1162 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="capellambse.diagram package" href="capellambse.diagram.html" /><link rel="prev" title="capellambse package" href="capellambse.html" />
+
+    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
+        <title>capellambse.aird package - py-capellambse documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">py-capellambse  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">py-capellambse  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Start</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../start/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/intro-to-api.html">Introduction to py-capellambse API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/declarative.html">Declarative modelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../start/audit-events.html">Audit events</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../howtos/howtos.html">How Tos</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/01%20Introduction.html">1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/02%20Intro%20to%20Physical%20Architecture%20API.html">2. Introduction to Physical Architecture API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/03%20Data%20Values.html">3. Data Types and Data Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/04%20Intro%20to%20Jinja%20templating.html">4. Using capellambse with Jinja2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/05%20Introduction%20to%20Libraries.html">5. Introduction to Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/06%20Introduction%20to%20Requirement%20access%20and%20management.html">6. Introduction to Requirement access and management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/07%20Code%20Generation.html">7. Introduction to Code Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/08%20Property%20Values.html">8. Property Values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/09%20Context%20Diagrams.html">9. Context Diagrams Extension</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/10%20Declarative%20Modeling.html">10. Declarative Modeling Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/11%20Complexity%20Assessment.html">11. Complexity Assessment</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">py-capellambse</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="capellambse.html">capellambse package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">capellambse.aird package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="capellambse.diagram.html">capellambse.diagram package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="capellambse.extensions.html">capellambse.extensions package</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="capellambse.extensions.metrics.html">capellambse.extensions.metrics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="capellambse.extensions.reqif.html">capellambse.extensions.reqif package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="capellambse.filehandler.html">capellambse.filehandler package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="capellambse.loader.html">capellambse.loader package</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="capellambse.model.html">capellambse.model package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="capellambse.model.common.html">capellambse.model.common package</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="capellambse.model.crosslayer.html">capellambse.model.crosslayer package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="capellambse.model.crosslayer.information.html">capellambse.model.crosslayer.information package</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="capellambse.model.layers.html">capellambse.model.layers package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="capellambse.pvmt.html">capellambse.pvmt package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="capellambse.svg.html">capellambse.svg package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integration with other tools</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tools/sphinx-extension.html">The py-capellambse Sphinx extension</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development/low-level-api.html">Low-level API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/how-to-explore-capella-mm.html">How to explore Capella meta-model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/developing-docs.html">Documentation development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/repl.html">The py-capellambse REPL</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="module-capellambse.aird">
+<span id="capellambse-aird-package"></span><h1>capellambse.aird package<a class="headerlink" href="#module-capellambse.aird" title="Permalink to this heading">#</a></h1>
+<p>Functions for parsing and interacting with diagrams in a Capella model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="capellambse.aird.ActiveFilters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capellambse.aird.</span></span><span class="sig-name descname"><span class="pre">ActiveFilters</span></span><a class="headerlink" href="#capellambse.aird.ActiveFilters" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableSet" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MutableSet</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</p>
+<p>A set of active filters on a <code class="xref py py-class docutils literal notranslate"><span class="pre">diag.Diagram</span></code>.</p>
+<p>Enable access to set, add and remove active filters on a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">diag.Diagram</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.ActiveFilters.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagram</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.ActiveFilters.__init__" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="capellambse.model.html#capellambse.model.MelodyModel" title="capellambse.model.MelodyModel"><em>MelodyModel</em></a>) – </p></li>
+<li><p><strong>diagram</strong> (<a class="reference internal" href="capellambse.model.html#capellambse.model.diagram.Diagram" title="capellambse.model.diagram.Diagram"><em>Diagram</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.ActiveFilters.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.ActiveFilters.add" title="Permalink to this definition">#</a></dt>
+<dd><p>Add an activated filter to the diagram.</p>
+<p>Writes a new <code class="docutils literal notranslate"><span class="pre">&lt;activatedFilters&gt;</span></code> XML element to the
+<code class="docutils literal notranslate"><span class="pre">&lt;diagram:DSemanticDiagram&gt;</span></code> XML element. If the <code class="docutils literal notranslate"><span class="pre">value</span></code> is
+not apparent in <code class="xref py py-data docutils literal notranslate"><span class="pre">capellambse.aird.GLOBAL_FILTERS</span></code> as a key
+it can not be applied when rendering. It should still be visible
+in the GUI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.ActiveFilters.discard">
+<span class="sig-name descname"><span class="pre">discard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.ActiveFilters.discard" title="Permalink to this definition">#</a></dt>
+<dd><p>Remove the filter with the given <code class="docutils literal notranslate"><span class="pre">value</span></code> from the diagram.</p>
+<p>Deletes <code class="docutils literal notranslate"><span class="pre">&lt;activatedFilters&gt;</span></code> XML element from the diagram
+element tree.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capellambse.aird.</span></span><span class="sig-name descname"><span class="pre">DiagramDescriptor</span></span><a class="headerlink" href="#capellambse.aird.DiagramDescriptor" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.NamedTuple" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></a></p>
+<p>DiagramDescriptor(fragment, name, styleclass, descriptor, uid, viewpoint, target)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.__new__">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fragment</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleclass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viewpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.__new__" title="Permalink to this definition">#</a></dt>
+<dd><p>Create new instance of DiagramDescriptor(fragment, name, styleclass, descriptor, uid, viewpoint, target)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fragment</strong> (<a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePosixPath" title="(in Python v3.11)"><em>pathlib.PurePosixPath</em></a>) – </p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+<li><p><strong>styleclass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – </p></li>
+<li><p><strong>descriptor</strong> (<em>etree._Element</em>) – </p></li>
+<li><p><strong>uid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+<li><p><strong>viewpoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+<li><p><strong>target</strong> (<em>etree._Element</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.descriptor">
+<span class="sig-name descname"><span class="pre">descriptor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://lxml.de/apidoc/lxml.etree.html#lxml.etree._Element" title="(in lxml v4.9.2)"><span class="pre">_Element</span></a></em><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.descriptor" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.fragment">
+<span class="sig-name descname"><span class="pre">fragment</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.PurePosixPath" title="(in Python v3.11)"><span class="pre">PurePosixPath</span></a></em><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.fragment" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.name" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.styleclass">
+<span class="sig-name descname"><span class="pre">styleclass</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.styleclass" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.target">
+<span class="sig-name descname"><span class="pre">target</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://lxml.de/apidoc/lxml.etree.html#lxml.etree._Element" title="(in lxml v4.9.2)"><span class="pre">_Element</span></a></em><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.target" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.uid">
+<span class="sig-name descname"><span class="pre">uid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.uid" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.DiagramDescriptor.viewpoint">
+<span class="sig-name descname"><span class="pre">viewpoint</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#capellambse.aird.DiagramDescriptor.viewpoint" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="capellambse.aird.enumerate_diagrams">
+<span class="sig-prename descclassname"><span class="pre">capellambse.aird.</span></span><span class="sig-name descname"><span class="pre">enumerate_diagrams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.enumerate_diagrams" title="Permalink to this definition">#</a></dt>
+<dd><p>Enumerate the diagrams in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model</strong> (<a class="reference internal" href="capellambse.loader.html#capellambse.loader.core.MelodyLoader" title="capellambse.loader.core.MelodyLoader"><em>MelodyLoader</em></a>) – The MelodyLoader instance</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.11)"><em>Iterator</em></a>[<a class="reference internal" href="#capellambse.aird.DiagramDescriptor" title="capellambse.aird.DiagramDescriptor"><em>DiagramDescriptor</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="capellambse.aird.parse_diagram">
+<span class="sig-prename descclassname"><span class="pre">capellambse.aird.</span></span><span class="sig-name descname"><span class="pre">parse_diagram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descriptor</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.parse_diagram" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse a single diagram from the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="capellambse.loader.html#capellambse.loader.core.MelodyLoader" title="capellambse.loader.core.MelodyLoader"><em>MelodyLoader</em></a>) – A loaded model.</p></li>
+<li><p><strong>descriptor</strong> (<a class="reference internal" href="#capellambse.aird.DiagramDescriptor" title="capellambse.aird.DiagramDescriptor"><em>DiagramDescriptor</em></a>) – A DiagramDescriptor as obtained from <a class="reference internal" href="#capellambse.aird.enumerate_diagrams" title="capellambse.aird.enumerate_diagrams"><code class="xref py py-func docutils literal notranslate"><span class="pre">enumerate_diagrams()</span></code></a>.</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><em>Any</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Diagram" title="capellambse.diagram._diagram.Diagram"><em>Diagram</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="capellambse.aird.parse_diagrams">
+<span class="sig-prename descclassname"><span class="pre">capellambse.aird.</span></span><span class="sig-name descname"><span class="pre">parse_diagrams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.parse_diagrams" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse all diagrams from the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<a class="reference internal" href="capellambse.loader.html#capellambse.loader.core.MelodyLoader" title="capellambse.loader.core.MelodyLoader"><em>MelodyLoader</em></a>) – </p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><em>Any</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.11)"><em>Iterator</em></a>[<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Diagram" title="capellambse.diagram._diagram.Diagram"><em>Diagram</em></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="module-capellambse.aird.diagram">
+<span id="capellambse-aird-diagram-module"></span><h2>capellambse.aird.diagram module<a class="headerlink" href="#module-capellambse.aird.diagram" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capellambse.aird.diagram.</span></span><span class="sig-name descname"><span class="pre">Box</span></span><a class="headerlink" href="#capellambse.aird.diagram.Box" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A Box.</p>
+<p>Some may call it rectangle.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.CHILD_MARGIN">
+<span class="sig-name descname"><span class="pre">CHILD_MARGIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#capellambse.aird.diagram.Box.CHILD_MARGIN" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.JSON_TYPE">
+<span class="sig-name descname"><span class="pre">JSON_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'box'</span></em><a class="headerlink" href="#capellambse.aird.diagram.Box.JSON_TYPE" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.PORT_OVERHANG">
+<span class="sig-name descname"><span class="pre">PORT_OVERHANG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#capellambse.aird.diagram.Box.PORT_OVERHANG" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collapsed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vector2D(x=0,</span> <span class="pre">y=0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vector2D(x=inf,</span> <span class="pre">y=inf)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleoverrides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidelabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Box.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Create a new box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A Vector2D describing the spatial position.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – A Vector2D describing the box’ size.  If one or both of its
+components are 0, it/they will be calculated based on the
+Box’ label text and contained children.</p></li>
+<li><p><strong>label</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – This box’ label text.</p></li>
+<li><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – UUID of the semantic element this box represents.</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em> | </em><em>None</em>) – This box’ parent box.</p></li>
+<li><p><strong>collapsed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Collapse this box and hide all its children.  Note that
+setting this flag does not change the box’ size.</p></li>
+<li><p><strong>minsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – When dynamically calculating Box size, the minimum size it
+should have.  Default: zero.</p></li>
+<li><p><strong>maxsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – When dynamically calculating Box size, the maximum size it
+can have.  Default: inifite.</p></li>
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.11)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – A list of UUIDs of objects in this box’ context.  This
+includes children and associated edges.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Flag this box as a port.  Affects how context is added.</p></li>
+<li><p><strong>features</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence" title="(in Python v3.11)"><em>MutableSequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>] </em><em>| </em><em>None</em>) – Certain classes of Box (like <code class="docutils literal notranslate"><span class="pre">Class</span></code>) have features, which
+is a list of strings that will be displayed inside the Box,
+separated from the label by a horizontal line.</p></li>
+<li><p><strong>styleclass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The CSS style class to use.</p></li>
+<li><p><strong>styleoverrides</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableMapping" title="(in Python v3.11)"><em>MutableMapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.capstyle.RGB" title="capellambse.diagram.capstyle.RGB"><em>RGB</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableSequence" title="(in Python v3.11)"><em>MutableSequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.capstyle.RGB" title="capellambse.diagram.capstyle.RGB"><em>RGB</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – A dict of CSS properties to override.</p></li>
+<li><p><strong>hidelabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Set to True to skip drawing this box’ label.</p></li>
+<li><p><strong>hidden</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Set to True to skip drawing this entire box.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.add_context">
+<span class="sig-name descname"><span class="pre">add_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Box.add_context" title="Permalink to this definition">#</a></dt>
+<dd><p>Add a UUID as context for this box.</p>
+<p>The context will bubble to the immediate parent if this box is a
+port.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.bounds">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><span class="pre">Box</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Box.bounds" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the bounding box of this Box.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.center">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><span class="pre">Vector2D</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Box.center" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the center point of this Box.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.create_portlabel">
+<span class="sig-name descname"><span class="pre">create_portlabel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labeltext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Box.create_portlabel" title="Permalink to this definition">#</a></dt>
+<dd><p>Add a label to a port box.</p>
+<p>The port that this is called for must be snapped to its parent’s
+left or right side.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>labeltext</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The label text.</p></li>
+<li><p><strong>margin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Space between the label text and the port Box.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.hidden">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hidden</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Box.hidden" title="Permalink to this definition">#</a></dt>
+<dd><p>Return whether to skip this Box during rendering.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.maxsize">
+<span class="sig-name descname"><span class="pre">maxsize</span></span><a class="headerlink" href="#capellambse.aird.diagram.Box.maxsize" title="Permalink to this definition">#</a></dt>
+<dd><p>A property that automatically converts 2-tuples into Vector2D.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.minsize">
+<span class="sig-name descname"><span class="pre">minsize</span></span><a class="headerlink" href="#capellambse.aird.diagram.Box.minsize" title="Permalink to this definition">#</a></dt>
+<dd><p>A property that automatically converts 2-tuples into Vector2D.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Box.move" title="Permalink to this definition">#</a></dt>
+<dd><p>Move the box by the specified offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><em>Vector2D</em></a>) – The offset to move the box by.</p></li>
+<li><p><strong>children</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Recursively move children as well.  If False, the positions
+of children need to be adjusted separately.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.padding">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">padding</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><span class="pre">Vector2D</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Box.padding" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the horizontal and vertical padding of label text.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.parent">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><span class="pre">Box</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Box.parent" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the parent element of this Box.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.pos">
+<span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#capellambse.aird.diagram.Box.pos" title="Permalink to this definition">#</a></dt>
+<dd><p>A property that automatically converts 2-tuples into Vector2D.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><span class="pre">Vector2D</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Box.size" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the size of this Box.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.snap_to_parent">
+<span class="sig-name descname"><span class="pre">snap_to_parent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Box.snap_to_parent" title="Permalink to this definition">#</a></dt>
+<dd><p>Snap this Box into the constraints set by its parent.</p>
+<p>If this Box is a port, ensure it lines up with the parent’s
+border, keeping an overhang of 2px.</p>
+<p>Otherwise, ensures that this Box will not overflow out of the
+parent’s border, keeping a padding of 2px.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Box.vector_snap">
+<span class="sig-name descname"><span class="pre">vector_snap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">RoutingStyle.OBLIQUE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Box.vector_snap" title="Permalink to this definition">#</a></dt>
+<dd><p>Snap the <code class="docutils literal notranslate"><span class="pre">point</span></code> into this Box, coming from <code class="docutils literal notranslate"><span class="pre">source</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>] </em><em>| </em><em>None</em>) – </p></li>
+<li><p><strong>style</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.RoutingStyle" title="capellambse.diagram._diagram.RoutingStyle"><em>RoutingStyle</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><em>Vector2D</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capellambse.aird.diagram.</span></span><span class="sig-name descname"><span class="pre">Circle</span></span><a class="headerlink" href="#capellambse.aird.diagram.Circle" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Represents a circle.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.JSON_TYPE">
+<span class="sig-name descname"><span class="pre">JSON_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'circle'</span></em><a class="headerlink" href="#capellambse.aird.diagram.Circle.JSON_TYPE" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleoverrides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Circle.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct a Circle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – The Circle’s center point as Vector2D or 2-tuple.</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The Circle radius in pixels.</p></li>
+<li><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The Circle’s unique identifier.</p></li>
+<li><p><strong>styleclass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The Circle’s CSS class.</p></li>
+<li><p><strong>styleoverrides</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableMapping" title="(in Python v3.11)"><em>MutableMapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.capstyle.RGB" title="capellambse.diagram.capstyle.RGB"><em>RGB</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableSequence" title="(in Python v3.11)"><em>MutableSequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.capstyle.RGB" title="capellambse.diagram.capstyle.RGB"><em>RGB</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – Dict of CSS key/value pairs that override the class
+defaults.</p></li>
+<li><p><strong>hidden</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – True to skip drawing this Circle.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.add_context">
+<span class="sig-name descname"><span class="pre">add_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Circle.add_context" title="Permalink to this definition">#</a></dt>
+<dd><p>Do nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.bounds">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><span class="pre">Box</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Circle.bounds" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the bounding box of this Circle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.center">
+<span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#capellambse.aird.diagram.Circle.center" title="Permalink to this definition">#</a></dt>
+<dd><p>A property that automatically converts 2-tuples into Vector2D.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.collapsed">
+<span class="sig-name descname"><span class="pre">collapsed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#capellambse.aird.diagram.Circle.collapsed" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.context">
+<span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#capellambse.aird.diagram.Circle.context" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.hidelabel">
+<span class="sig-name descname"><span class="pre">hidelabel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#capellambse.aird.diagram.Circle.hidelabel" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#capellambse.aird.diagram.Circle.label" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Circle.move" title="Permalink to this definition">#</a></dt>
+<dd><p>Move this Circle on the 2-dimensional plane.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>children</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.port">
+<span class="sig-name descname"><span class="pre">port</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#capellambse.aird.diagram.Circle.port" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Circle.vector_snap">
+<span class="sig-name descname"><span class="pre">vector_snap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">RoutingStyle.OBLIQUE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Circle.vector_snap" title="Permalink to this definition">#</a></dt>
+<dd><p>Snap the vector onto this Circle, preferably in direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>style</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.RoutingStyle" title="capellambse.diagram._diagram.RoutingStyle"><em>RoutingStyle</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><em>Vector2D</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Diagram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capellambse.aird.diagram.</span></span><span class="sig-name descname"><span class="pre">Diagram</span></span><a class="headerlink" href="#capellambse.aird.diagram.Diagram" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A complete diagram, including all elements required by it.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Diagram.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Untitled</span> <span class="pre">Diagram'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viewport</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elements</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Diagram.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct a new diagram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The diagram’s name.</p></li>
+<li><p><strong>viewport</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em> | </em><em>None</em>) – A Box describing this diagram’s viewport.</p></li>
+<li><p><strong>elements</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.11)"><em>Sequence</em></a><em>[</em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Edge" title="capellambse.diagram._diagram.Edge"><em>Edge</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Circle" title="capellambse.diagram._diagram.Circle"><em>Circle</em></a><em>] </em><em>| </em><em>None</em>) – A <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> containing the diagram’s initial elements.</p></li>
+<li><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The unique ID of this diagram.</p></li>
+<li><p><strong>styleclass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The diagram class.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Diagram.add_element">
+<span class="sig-name descname"><span class="pre">add_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend_viewport</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Diagram.add_element" title="Permalink to this definition">#</a></dt>
+<dd><p>Add an element to this diagram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Edge" title="capellambse.diagram._diagram.Edge"><em>Edge</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Circle" title="capellambse.diagram._diagram.Circle"><em>Circle</em></a>) – The element to add.</p></li>
+<li><p><strong>extend_viewport</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – True to automatically extend the diagram viewport so that
+the added element is fully visible.</p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Normally an exception will be raised if another element with
+the same UUID as the new one already exists in the diagram.
+If this is set to True, the old element will be overwritten
+instead.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Diagram.calculate_viewport">
+<span class="sig-name descname"><span class="pre">calculate_viewport</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Diagram.calculate_viewport" title="Permalink to this definition">#</a></dt>
+<dd><p>Recalculate the viewport so that all elements are contained.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Diagram.normalize_viewport">
+<span class="sig-name descname"><span class="pre">normalize_viewport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Diagram.normalize_viewport" title="Permalink to this definition">#</a></dt>
+<dd><p>Normalize the viewport.</p>
+<p>This function moves all elements contained within this diagram
+so that the top left corner of the viewport is at (0, 0) (or the
+specified offset, if given).</p>
+<p>If a single value is given as offset, it is applied to both X
+and Y coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capellambse.aird.diagram.</span></span><span class="sig-name descname"><span class="pre">Edge</span></span><a class="headerlink" href="#capellambse.aird.diagram.Edge" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vec2List" title="capellambse.diagram._vector2d.Vec2List"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vec2List</span></code></a></p>
+<p>An edge in the diagram.</p>
+<p>An Edge consists of a series of points that are traversed in order.
+Each point is given as Vector2D containing absolute coordinates.  At
+least two points are required.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.JSON_TYPE">
+<span class="sig-name descname"><span class="pre">JSON_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'edge'</span></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.JSON_TYPE" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleclass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">styleoverrides</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Edge.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct an Edge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Edge" title="capellambse.diagram._diagram.Edge"><em>Edge</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Circle" title="capellambse.diagram._diagram.Circle"><em>Circle</em></a><em> | </em><em>None</em>) – The source diagram element of this Edge.</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Edge" title="capellambse.diagram._diagram.Edge"><em>Edge</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Circle" title="capellambse.diagram._diagram.Circle"><em>Circle</em></a><em> | </em><em>None</em>) – The target diagram element of this Edge.</p></li>
+<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence" title="(in Python v3.11)"><em>MutableSequence</em></a><em>[</em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><em>Box</em></a><em>] </em><em>| </em><em>None</em>) – Labels for this Edge. Each label is a <code class="docutils literal notranslate"><span class="pre">Box</span></code> with <code class="docutils literal notranslate"><span class="pre">pos</span></code>,
+<code class="docutils literal notranslate"><span class="pre">size</span></code> and a simple <code class="docutils literal notranslate"><span class="pre">str</span></code> label. Other configurations of
+Boxes are not supported. The <code class="docutils literal notranslate"><span class="pre">hidden</span></code> flag is honored
+during rendering calculations.</p></li>
+<li><p><strong>points</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.11)"><em>Iterable</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em><em>]</em>) – A list of <code class="docutils literal notranslate"><span class="pre">Vector2D</span></code>s with the (absolute) points this
+edge follows.</p></li>
+<li><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – UUID of the semantic element this Edge represents.</p></li>
+<li><p><strong>styleclass</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><em>None</em>) – The CSS style class to use.</p></li>
+<li><p><strong>styleoverrides</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableMapping" title="(in Python v3.11)"><em>MutableMapping</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.capstyle.RGB" title="capellambse.diagram.capstyle.RGB"><em>RGB</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableSequence" title="(in Python v3.11)"><em>MutableSequence</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> | </em><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.capstyle.RGB" title="capellambse.diagram.capstyle.RGB"><em>RGB</em></a><em>]</em><em>] </em><em>| </em><em>None</em>) – A dict of CSS properties to override.</p></li>
+<li><p><strong>hidden</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – True to skip drawing this edge entirely.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.add_context">
+<span class="sig-name descname"><span class="pre">add_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Edge.add_context" title="Permalink to this definition">#</a></dt>
+<dd><p>Do nothing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>uuid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.bounds">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Box" title="capellambse.diagram._diagram.Box"><span class="pre">Box</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.bounds" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the bounding Box of this Edge.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.center">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><span class="pre">Vector2D</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.center" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the point in the middle of this edge.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.collapsed">
+<span class="sig-name descname"><span class="pre">collapsed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.collapsed" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.context">
+<span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">cabc.Set</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({})</span></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.context" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.hidden">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hidden</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.hidden" title="Permalink to this definition">#</a></dt>
+<dd><p>Return whether to skip this Edge during rendering.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.hidelabel">
+<span class="sig-name descname"><span class="pre">hidelabel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.hidelabel" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.length">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.length" title="Permalink to this definition">#</a></dt>
+<dd><p>Return length of this edge.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Edge.move" title="Permalink to this definition">#</a></dt>
+<dd><p>Move all points of this edge by the specified offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><em>Vector2D</em></a>) – </p></li>
+<li><p><strong>children</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.points">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">points</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vec2List" title="capellambse.diagram._vector2d.Vec2List"><span class="pre">Vec2List</span></a></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.points" title="Permalink to this definition">#</a></dt>
+<dd><p>Return an iterable over this edge’s points.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.port">
+<span class="sig-name descname"><span class="pre">port</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#capellambse.aird.diagram.Edge.port" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.Edge.vector_snap">
+<span class="sig-name descname"><span class="pre">vector_snap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">RoutingStyle.OBLIQUE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#capellambse.aird.diagram.Edge.vector_snap" title="Permalink to this definition">#</a></dt>
+<dd><p>Snap the <code class="docutils literal notranslate"><span class="pre">vector</span></code> onto this Edge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>source</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><em>Tuple</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> | </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>]</em>) – </p></li>
+<li><p><strong>style</strong> (<a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.RoutingStyle" title="capellambse.diagram._diagram.RoutingStyle"><em>RoutingStyle</em></a>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="capellambse.diagram.html#capellambse.diagram.Vector2D" title="capellambse.diagram._vector2d.Vector2D"><em>Vector2D</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.RoutingStyle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">capellambse.aird.diagram.</span></span><span class="sig-name descname"><span class="pre">RoutingStyle</span></span><a class="headerlink" href="#capellambse.aird.diagram.RoutingStyle" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.RoutingStyle.MANHATTAN">
+<span class="sig-name descname"><span class="pre">MANHATTAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#capellambse.aird.diagram.RoutingStyle.MANHATTAN" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.RoutingStyle.OBLIQUE">
+<span class="sig-name descname"><span class="pre">OBLIQUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#capellambse.aird.diagram.RoutingStyle.OBLIQUE" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="capellambse.aird.diagram.RoutingStyle.TREE">
+<span class="sig-name descname"><span class="pre">TREE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#capellambse.aird.diagram.RoutingStyle.TREE" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="capellambse.diagram.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">capellambse.diagram package</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="capellambse.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">capellambse package</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; DB Netz AG and the capellambse contributors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/DSD-DBS/py-capellambse" aria-label="GitHub"><img src="/_static/img/github-logo.svg"/></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">capellambse.aird package</a><ul>
+<li><a class="reference internal" href="#capellambse.aird.ActiveFilters"><code class="docutils literal notranslate"><span class="pre">ActiveFilters</span></code></a><ul>
+<li><a class="reference internal" href="#capellambse.aird.ActiveFilters.__init__"><code class="docutils literal notranslate"><span class="pre">ActiveFilters.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.ActiveFilters.add"><code class="docutils literal notranslate"><span class="pre">ActiveFilters.add()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.ActiveFilters.discard"><code class="docutils literal notranslate"><span class="pre">ActiveFilters.discard()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor</span></code></a><ul>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.__new__"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.__new__()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.descriptor"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.descriptor</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.fragment"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.fragment</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.name"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.name</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.styleclass"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.styleclass</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.target"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.target</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.uid"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.uid</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.DiagramDescriptor.viewpoint"><code class="docutils literal notranslate"><span class="pre">DiagramDescriptor.viewpoint</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capellambse.aird.enumerate_diagrams"><code class="docutils literal notranslate"><span class="pre">enumerate_diagrams()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.parse_diagram"><code class="docutils literal notranslate"><span class="pre">parse_diagram()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.parse_diagrams"><code class="docutils literal notranslate"><span class="pre">parse_diagrams()</span></code></a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-capellambse.aird.diagram">capellambse.aird.diagram module</a><ul>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box"><code class="docutils literal notranslate"><span class="pre">Box</span></code></a><ul>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.CHILD_MARGIN"><code class="docutils literal notranslate"><span class="pre">Box.CHILD_MARGIN</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.JSON_TYPE"><code class="docutils literal notranslate"><span class="pre">Box.JSON_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.PORT_OVERHANG"><code class="docutils literal notranslate"><span class="pre">Box.PORT_OVERHANG</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.__init__"><code class="docutils literal notranslate"><span class="pre">Box.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.add_context"><code class="docutils literal notranslate"><span class="pre">Box.add_context()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.bounds"><code class="docutils literal notranslate"><span class="pre">Box.bounds</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.center"><code class="docutils literal notranslate"><span class="pre">Box.center</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.create_portlabel"><code class="docutils literal notranslate"><span class="pre">Box.create_portlabel()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.hidden"><code class="docutils literal notranslate"><span class="pre">Box.hidden</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.maxsize"><code class="docutils literal notranslate"><span class="pre">Box.maxsize</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.minsize"><code class="docutils literal notranslate"><span class="pre">Box.minsize</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.move"><code class="docutils literal notranslate"><span class="pre">Box.move()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.padding"><code class="docutils literal notranslate"><span class="pre">Box.padding</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.parent"><code class="docutils literal notranslate"><span class="pre">Box.parent</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.pos"><code class="docutils literal notranslate"><span class="pre">Box.pos</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.size"><code class="docutils literal notranslate"><span class="pre">Box.size</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.snap_to_parent"><code class="docutils literal notranslate"><span class="pre">Box.snap_to_parent()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Box.vector_snap"><code class="docutils literal notranslate"><span class="pre">Box.vector_snap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle"><code class="docutils literal notranslate"><span class="pre">Circle</span></code></a><ul>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.JSON_TYPE"><code class="docutils literal notranslate"><span class="pre">Circle.JSON_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.__init__"><code class="docutils literal notranslate"><span class="pre">Circle.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.add_context"><code class="docutils literal notranslate"><span class="pre">Circle.add_context()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.bounds"><code class="docutils literal notranslate"><span class="pre">Circle.bounds</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.center"><code class="docutils literal notranslate"><span class="pre">Circle.center</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.collapsed"><code class="docutils literal notranslate"><span class="pre">Circle.collapsed</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.context"><code class="docutils literal notranslate"><span class="pre">Circle.context</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.hidelabel"><code class="docutils literal notranslate"><span class="pre">Circle.hidelabel</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.label"><code class="docutils literal notranslate"><span class="pre">Circle.label</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.move"><code class="docutils literal notranslate"><span class="pre">Circle.move()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.port"><code class="docutils literal notranslate"><span class="pre">Circle.port</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Circle.vector_snap"><code class="docutils literal notranslate"><span class="pre">Circle.vector_snap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Diagram"><code class="docutils literal notranslate"><span class="pre">Diagram</span></code></a><ul>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Diagram.__init__"><code class="docutils literal notranslate"><span class="pre">Diagram.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Diagram.add_element"><code class="docutils literal notranslate"><span class="pre">Diagram.add_element()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Diagram.calculate_viewport"><code class="docutils literal notranslate"><span class="pre">Diagram.calculate_viewport()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Diagram.normalize_viewport"><code class="docutils literal notranslate"><span class="pre">Diagram.normalize_viewport()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge"><code class="docutils literal notranslate"><span class="pre">Edge</span></code></a><ul>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.JSON_TYPE"><code class="docutils literal notranslate"><span class="pre">Edge.JSON_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.__init__"><code class="docutils literal notranslate"><span class="pre">Edge.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.add_context"><code class="docutils literal notranslate"><span class="pre">Edge.add_context()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.bounds"><code class="docutils literal notranslate"><span class="pre">Edge.bounds</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.center"><code class="docutils literal notranslate"><span class="pre">Edge.center</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.collapsed"><code class="docutils literal notranslate"><span class="pre">Edge.collapsed</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.context"><code class="docutils literal notranslate"><span class="pre">Edge.context</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.hidden"><code class="docutils literal notranslate"><span class="pre">Edge.hidden</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.hidelabel"><code class="docutils literal notranslate"><span class="pre">Edge.hidelabel</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.length"><code class="docutils literal notranslate"><span class="pre">Edge.length</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.move"><code class="docutils literal notranslate"><span class="pre">Edge.move()</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.points"><code class="docutils literal notranslate"><span class="pre">Edge.points</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.port"><code class="docutils literal notranslate"><span class="pre">Edge.port</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.Edge.vector_snap"><code class="docutils literal notranslate"><span class="pre">Edge.vector_snap()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.RoutingStyle"><code class="docutils literal notranslate"><span class="pre">RoutingStyle</span></code></a><ul>
+<li><a class="reference internal" href="#capellambse.aird.diagram.RoutingStyle.MANHATTAN"><code class="docutils literal notranslate"><span class="pre">RoutingStyle.MANHATTAN</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.RoutingStyle.OBLIQUE"><code class="docutils literal notranslate"><span class="pre">RoutingStyle.OBLIQUE</span></code></a></li>
+<li><a class="reference internal" href="#capellambse.aird.diagram.RoutingStyle.TREE"><code class="docutils literal notranslate"><span class="pre">RoutingStyle.TREE</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    </body>
+</html>

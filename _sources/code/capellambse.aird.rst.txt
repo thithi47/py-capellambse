@@ -1,0 +1,18 @@
+capellambse.aird package
+========================
+
+.. automodule:: capellambse.aird
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+capellambse.aird.diagram module
+-------------------------------
+
+.. automodule:: capellambse.aird.diagram
+   :members:
+   :undoc-members:
+   :show-inheritance:
