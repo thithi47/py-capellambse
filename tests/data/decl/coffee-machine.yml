@@ -3,9 +3,9 @@
 capellambse: 1.0.0
 model:
   version: 12345678
-  url: example.com
+  url: https://example.com/model.git
 referencing: explicit
-generator: example 1.0.0
+generator: Declarative Modelling Generator 1.0.0
 ---
 - parent: !uuid 0d2edb8f-fa34-4e73-89ec-fb9a63001440 # root logical component
   extend:

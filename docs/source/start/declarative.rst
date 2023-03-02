@@ -68,9 +68,41 @@ containing YAML, wrap it in :external:class:`io.StringIO`:
 Format description
 ==================
 
-The expected YAML follows a simple format, where a parent object (i.e. an
-object that already exists in the model) is selected, and one or more of three
-different operations is applied to it:
+Metadata
+--------
+.. versionadded:: 0.5.16
+   Added metadata document to the declarative modelling YAML.
+
+The metadata has the following format:
+
+.. code-block:: yaml
+
+   capellambse: 1.0.0
+   model:
+     version: 2fd4e1c67a2d28fced849ee1bb76e7391b93eb12
+     url: https://example.com/model.git
+   referencing: explicit
+   generator: Declarative Modelling Generator 1.0.0
+
+It gives information about which model the declarative modelling YAML file
+wants to change, with which capellambse version and generator it was written
+with and the referencing-type. A versioned model (using a gitURL) can be
+uniquely identified by its commit-hash and the repository ``url``. These values
+are checked against the ``model.info`` during ``decl.apply`` when the
+``strict`` parameter is ``True`` (default).
+
+The only accepted referencing-type for ``decl.apply`` is ``explicit``.
+Instructions in the declarative modelling YAML may need additional instructions
+for references such that the changes are correctly displayed in Capella. E.g.
+a delete instruction of a port should be followed by a delete instruction of
+the connected exchanges, since an exchange always needs a source and a target.
+
+Instructions
+------------
+
+The expected instruction document in the YAML follows a simple format, where a
+parent object (i.e. an object that already exists in the model) is selected,
+and one or more of three different operations is applied to it:
 
 - ``extend``-ing the object on list attributes,
 - ``modify``-ing the object itself, or
