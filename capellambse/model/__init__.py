@@ -364,6 +364,44 @@ class MelodyModel:
         """Search the entire model for an element with the given UUID."""
         return common.GenericElement.from_model(self, self._loader[uuid])
 
+    def find_references(
+        self, target: ModelObject, /
+    ) -> cabc.Iterator[tuple[ModelObject, str, int | None]]:
+        """Search the model for references to the given object.
+
+        Parameters
+        ----------
+        target
+            The target object to search for.
+
+        Yields
+        ------
+        tuple[ModelObject, str, int | None]
+            A 3-tuple containing the referencing model object, the
+            attribute on that object, and an optional index. If the
+            attribute contains a list of objects, the index shows the
+            index into the list that was found. Otherwise the index is
+            None.
+        """
+        for obj in self.search():
+            for attr in _reference_attributes(type(obj)):
+                if attr.startswith("_"):
+                    continue
+
+                try:
+                    value = getattr(obj, attr)
+                except Exception:
+                    continue
+
+                if isinstance(value, GenericElement) and value == target:
+                    yield (obj, attr, None)
+                elif isinstance(value, ElementList):
+                    try:
+                        idx = value.index(target)
+                    except ValueError:
+                        continue
+                    yield (obj, attr, idx)
+
     def update_diagram_cache(
         self,
         capella_cli: str,
@@ -536,3 +574,23 @@ class MelodyModel:
 
         def __getattr__(self, attr: str) -> t.Any:
             """Account for extension attributes in static type checks."""
+
+
+def _reference_attributes(objtype: type[ModelObject], /) -> tuple[str, ...]:
+    ignored_accessors: tuple[type[common.Accessor], ...] = (
+        common.DeepProxyAccessor,
+        common.DeprecatedAccessor,
+        common.ParentAccessor,
+        common.ReferenceSearchingAccessor,
+    )
+
+    attrs: list[str] = []
+    for i in dir(objtype):
+        if i.startswith("_") or i == "parent":
+            continue
+        acc = getattr(objtype, i, None)
+        if isinstance(acc, common.Accessor) and not isinstance(
+            acc, ignored_accessors
+        ):
+            attrs.append(i)
+    return tuple(attrs)

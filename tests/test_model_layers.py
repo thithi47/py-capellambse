@@ -45,6 +45,29 @@ def test_model_compatibility(folder: str, aird: str) -> None:
     MelodyModel(TEST_ROOT / folder / aird)
 
 
+def test_find_references_finds_all_references(model: MelodyModel) -> None:
+    target = model.by_uuid("a8c42033-fdf2-458f-bae9-1cfd1207c49f")
+    expected = [
+        ("1bba6377-90b7-42d6-ad03-6c536e5519fd", "involved"),
+        ("1bba6377-90b7-42d6-ad03-6c536e5519fd", "target"),
+        ("53c58b24-3938-4d6a-b84a-bb9bff355a41", "involved_entities"),
+        ("55c6adbe-63a5-4d1f-8319-e2f768b79fbf", "involved"),
+        ("55c6adbe-63a5-4d1f-8319-e2f768b79fbf", "target"),
+        ("6638ccd2-61cc-481e-bb23-4c1b147e1dbc", "target"),
+        ("83d1334f-6180-46c4-a80d-6839341df688", "involved_entities"),
+        ("9ac82bfc-1aa6-4773-9a99-91f910389668", "type"),
+        ("e37510b9-3166-4f80-a919-dfaac9b696c7", "entities"),
+    ]
+
+    actual = sorted(
+        (getattr(obj, "uuid", None), attr)
+        for obj, attr, _ in model.find_references(target)
+    )
+
+    assert target.uuid not in actual
+    assert actual == expected
+
+
 def test_ElementList_filter_by_name(model: MelodyModel):
     cap = model.oa.all_capabilities.by_name("Eat food")
     assert cap.uuid == "3b83b4ba-671a-4de8-9c07-a5c6b1d3c422"
