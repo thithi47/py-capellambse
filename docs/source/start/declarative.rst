@@ -81,17 +81,15 @@ The metadata has the following format:
    model:
      version: 2fd4e1c67a2d28fced849ee1bb76e7391b93eb12
      url: https://example.com/model.git
-   referencing: explicit
    generator: Declarative Modelling Generator 1.0.0
 
 It gives information about which model the declarative modelling YAML file
 wants to change, with which capellambse version and generator it was written
-with and the referencing-type. A versioned model (using a gitURL) can be
-uniquely identified by its commit-hash and the repository ``url``. These values
+with and the referencing-type. A versioned model (e.g. using a git URL) can be
+uniquely identified by its revision and the repository ``url``. These values
 are checked against the ``model.info`` during ``decl.apply`` when the
-``strict`` parameter is ``True`` (default).
+``strict`` parameter is ``True`` (``False`` per default).
 
-The only accepted referencing-type for ``decl.apply`` is ``explicit``.
 Instructions in the declarative modelling YAML may need additional instructions
 for references such that the changes are correctly displayed in Capella. E.g.
 a delete instruction of a port should be followed by a delete instruction of

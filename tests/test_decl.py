@@ -2,13 +2,16 @@
 # SPDX-License-Identifier: Apache-2.0
 from __future__ import annotations
 
+import collections.abc as cabc
 import hashlib
 import io
+import logging
 import pathlib
 import shutil
 import subprocess
 import sys
 import textwrap
+import typing as t
 from importlib import metadata as imm
 
 import pytest
@@ -30,10 +33,12 @@ MODELPATH = pathlib.Path(TEST_ROOT / "5_0")
 ROOT_COMPONENT = helpers.UUIDString("0d2edb8f-fa34-4e73-89ec-fb9a63001440")
 ROOT_FUNCTION = helpers.UUIDString("f28ec0f8-f3b3-43a0-8af7-79f194b29a2d")
 METADATA = {
-    "capellambse": "1.0.0",
-    "model": {"url": "Example.com", "version": 12345678},
+    "written_by": {
+        "capellambse_version": "1.0.0",
+        "generator": "Example 1.0.0",
+    },
+    "model": {"url": "https://example.invalid", "version": "12345678"},
     "referencing": "explicit",
-    "generator": "Example 1.0.0",
 }
 
 
@@ -80,31 +85,31 @@ class TestDumpLoad:
 
     @staticmethod
     def test_dumping_with_metadata():
-        uuid = helpers.UUIDString("00000000-0000-0000-0000-000000000000")
-        data = [{"parent": decl.UUIDReference(uuid)}]
+        data = [{"parent": decl.UUIDReference(ROOT_FUNCTION)}]
 
         decl.dump(data, metadata=METADATA)
 
     @staticmethod
     def test_loading_with_metadata():
-        uuid = helpers.UUIDString("00000000-0000-0000-0000-000000000000")
+        uuid = helpers.UUIDString(ROOT_FUNCTION)
         yml = textwrap.dedent(
             f"""\
-            capellambse: 1.0.0
+            written_by:
+                capellambse_version: 1.0.0
+                generator: Example 1.0.0
             model:
-              version: 12345678
-              url: Example.com
+              version: "12345678"
+              url: https://example.invalid
             referencing: explicit
-            generator: Example 1.0.0
             ---
             - parent: !uuid {uuid!r}
             """
         )
-        expected = [METADATA, [{"parent": decl.UUIDReference(uuid)}]]
 
-        metadata, actual = decl.load_with_metadata(io.StringIO(yml))
+        metadata, instructions = decl.load_with_metadata(io.StringIO(yml))
 
-        assert [metadata, actual] == expected
+        assert metadata == METADATA
+        assert instructions == [{"parent": decl.UUIDReference(uuid)}]
 
 
 class TestApplyExtend:
@@ -118,7 +123,7 @@ class TestApplyExtend:
             """
 
         with pytest.raises(ValueError, match="invalid_operation"):
-            decl.apply(model, io.StringIO(yml), strict=False)
+            decl.apply(model, io.StringIO(yml))
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -144,7 +149,7 @@ class TestApplyExtend:
         expected_len = len(model.search()) + 1
         assert funcname not in parent_getter(model).functions.by_name
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         actual_len = len(model.search())
         assert actual_len == expected_len
@@ -167,7 +172,7 @@ class TestApplyExtend:
         for i in ("first", "second", "third"):
             assert f"pass the {i} test" not in parent_obj.functions.by_name
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         actual_len = len(model.search())
         assert actual_len == expected_len
@@ -190,7 +195,7 @@ class TestApplyExtend:
             """
         expected_len = len(model.search()) + 3
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         actual_len = len(model.search())
         assert actual_len == expected_len
@@ -218,7 +223,7 @@ class TestApplyExtend:
             """
         assert "New attribute" not in module.attribute_definitions.by_long_name
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         attrdefs = module.attribute_definitions
         assert "New attribute" in attrdefs.by_long_name
@@ -239,7 +244,7 @@ class TestApplyExtend:
             """
         assert "NewGame++" not in attrdef.values
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert "NewGame++" in attrdef.values
 
@@ -259,7 +264,7 @@ class TestApplyExtend:
                   - !uuid {fnc.uuid}
             """
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert fnc in root_function.functions
         assert root_function == fnc.parent
@@ -283,7 +288,7 @@ class TestApplyExtend:
                   - !promise promised-fnc
             """
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert fnc_name in root_component.functions.by_name
 
@@ -300,7 +305,7 @@ class TestApplyExtend:
             """
 
         with pytest.raises(TypeError, match=non_existing_attr):
-            decl.apply(model, io.StringIO(yml), strict=False)
+            decl.apply(model, io.StringIO(yml))
 
 
 class TestApplyPromises:
@@ -323,7 +328,7 @@ class TestApplyPromises:
             """
         expected_len = len(root_comp.allocated_functions) + 1
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         actual_len = len(root_comp.allocated_functions)
         assert actual_len == expected_len
@@ -349,7 +354,7 @@ class TestApplyPromises:
             """
         expected_len = len(root_comp.allocated_functions) + 1
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         actual_len = len(root_comp.allocated_functions)
         assert actual_len == expected_len
@@ -390,7 +395,7 @@ class TestApplyPromises:
         )
         yml = snippets[order[0]] + snippets[order[1]]
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert "Test exchange" in root_func.exchanges.by_name
         exc = root_func.exchanges.by_name("Test exchange")
@@ -412,7 +417,7 @@ class TestApplyPromises:
             """
 
         with pytest.raises(ValueError, match=r"\bcolliding-promise-id\b"):
-            decl.apply(model, io.StringIO(yml), strict=False)
+            decl.apply(model, io.StringIO(yml))
 
     @staticmethod
     def test_unfulfilled_promises_raise_an_exception(
@@ -426,7 +431,7 @@ class TestApplyPromises:
             """
 
         with pytest.raises(decl.UnfulfilledPromisesError, match="^pass-test$"):
-            decl.apply(model, io.StringIO(yml), strict=False)
+            decl.apply(model, io.StringIO(yml))
 
 
 class TestApplyModify:
@@ -443,7 +448,7 @@ class TestApplyModify:
                 name: {newname}
             """
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert root_component.name == newname
 
@@ -465,7 +470,7 @@ class TestApplyModify:
             """
         assert "make coffee" not in root_component.allocated_functions.by_name
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert "make coffee" in root_component.allocated_functions.by_name
 
@@ -483,7 +488,7 @@ class TestApplyModify:
             """
         assert root_function not in root_component.allocated_functions
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert root_function in root_component.allocated_functions
 
@@ -500,7 +505,7 @@ class TestApplyModify:
             """
         assert len(root_function.functions) > 0
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert len(root_function.functions) == 1
         assert root_function.functions[0].name == "survive"
@@ -523,7 +528,7 @@ class TestApplyDelete:
         assert subfunc in root_function.functions.by_uuid
         expected_len = len(root_function.functions) - 1
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert len(root_function.functions) == expected_len
         assert subfunc not in root_function.functions.by_uuid
@@ -542,95 +547,125 @@ class TestApplyDelete:
                 functions:
             """
 
-        decl.apply(model, io.StringIO(yml), strict=False)
+        decl.apply(model, io.StringIO(yml))
 
         assert len(root_function.functions) == 0
 
 
 class TestMetadataMatchesModelinfo:
     @staticmethod
-    def test_current_version_less_than_received_version(
+    @pytest.mark.parametrize(
+        ["metadata", "expected"],
+        [
+            pytest.param(
+                {"written_by": {"capellambse_version": "99999.9.9"}},
+                imm.version("capellambse"),
+                id="Current version less than installed",
+            ),
+            pytest.param(
+                {
+                    "written_by": {
+                        "capellambse_version": imm.version("capellambse")
+                    },
+                    "referencing": "implicit",
+                },
+                "implicit",
+                id="Referencing not explicit",
+            ),
+        ],
+    )
+    def test_metadata_checks(
         model: capellambse.MelodyModel,
+        metadata: dict[str, t.Any],
+        expected: str,
     ):
-        metadata = {"capellambse": "1.2.3"}
-        version = imm.version("capellambse")
-
         with pytest.raises(ValueError) as excinfo:
             decl._metadata_matches_modelinfo(model, metadata)
 
-        assert str(excinfo.value) == (
-            "Unsupported change-set: The version of the installed capellambse "
-            f"({version}) is lower than the version with which the change-set "
-            "was written with (1.2.3)."
-        )
+        assert expected in str(excinfo.value)
 
     @staticmethod
-    def test_referencing_not_explicit(model: capellambse.MelodyModel):
-        metadata = {
-            "capellambse": imm.version("capellambse"),
-            "referencing": "implicit",
-        }
-
-        with pytest.raises(ValueError) as excinfo:
-            decl._metadata_matches_modelinfo(model, metadata)
-
-        assert str(excinfo.value) == (
-            "Unsupported change-set: Only explicit change-sets are supported. "
-            "Got 'referencing: implicit'."
-        )
-
-    @staticmethod
-    def test_revision_hash_not_matching(
-        model: capellambse.MelodyModel, monkeypatch: pytest.MonkeyPatch
+    @pytest.mark.parametrize(
+        ["metadata", "info_getter", "expected"],
+        [
+            pytest.param(
+                {
+                    "model": {"version": "def456"},
+                    "written_by": {
+                        "capellambse_version": imm.version("capellambse")
+                    },
+                    "referencing": "explicit",
+                },
+                lambda: modelinfo.ModelInfo(rev_hash="abc123"),
+                "def456",
+                id="Model rev hash not matching",
+            ),
+            pytest.param(
+                {
+                    "model": {
+                        "url": "https://example.com/models/456",
+                        "version": None,
+                    },
+                    "written_by": {
+                        "capellambse_version": imm.version("capellambse")
+                    },
+                    "referencing": "explicit",
+                },
+                lambda: modelinfo.ModelInfo(
+                    url="https://example.com/models/123"
+                ),
+                "https://example.com/models/456",
+                id="Model URL not matching",
+            ),
+        ],
+    )
+    def test_meta_with_ModelInfo_patching(
+        model: capellambse.MelodyModel,
+        monkeypatch: pytest.MonkeyPatch,
+        metadata: dict[str, t.Any],
+        info_getter: cabc.Callable[[], modelinfo.ModelInfo],
+        expected: str,
     ):
-        monkeypatch.setattr(
-            model._loader,
-            "get_model_info",
-            lambda: modelinfo.ModelInfo(rev_hash="abc123"),
-        )
-        metadata = {
-            "capellambse": imm.version("capellambse"),
-            "referencing": "explicit",
-            "model": {"version": "def456"},
-        }
+        monkeypatch.setattr(model._loader, "get_model_info", info_getter)
 
         with pytest.raises(ValueError) as excinfo:
             decl._metadata_matches_modelinfo(model, metadata)
 
-        assert str(excinfo.value) == (
-            "Unsupported change-set: Model revision hash isn't matching. Got "
-            "'def456' but current is 'abc123'."
-        )
+        assert expected in str(excinfo.value)
 
     @staticmethod
-    def test_model_url_not_matching(
-        model: capellambse.MelodyModel, monkeypatch: pytest.MonkeyPatch
+    def test_model_generator_not_in_metadata_logs_info(
+        model: capellambse.MelodyModel,
+        monkeypatch: pytest.MonkeyPatch,
+        caplog: pytest.LogCaptureFixture,
     ):
         url = "https://example.com/models/123"
+        rev_hash = "abc123"
         monkeypatch.setattr(
             model._loader,
             "get_model_info",
-            lambda: modelinfo.ModelInfo(url=url),
+            lambda: modelinfo.ModelInfo(url=url, rev_hash=rev_hash),
         )
-        expected_url = "https://example.com/models/456"
         metadata = {
-            "capellambse": imm.version("capellambse"),
+            "model": {"url": url, "version": rev_hash},
+            "written_by": {"capellambse_version": imm.version("capellambse")},
             "referencing": "explicit",
-            "model": {"url": expected_url, "version": None},
         }
 
-        with pytest.raises(ValueError) as excinfo:
+        with caplog.at_level(logging.INFO):
             decl._metadata_matches_modelinfo(model, metadata)
 
-        assert str(excinfo.value) == (
-            "Unsupported change-set: Model URL isn't matching. Got "
-            f"{expected_url!r} but current is {url!r}."
-        )
+        assert "Unknown declarative YAML generator" in caplog.text
 
 
 @pytest.mark.parametrize("filename", ["coffee-machine.yml"])
 def test_full_example(model: capellambse.MelodyModel, filename: str):
-    decl.apply(model, DATAPATH / filename, strict=False)
+    decl.apply(model, DATAPATH / filename)
+
+
+@pytest.mark.parametrize("filename", ["coffee-machine.yml"])
+def test_full_example_(model: capellambse.MelodyModel, filename: str):
+    decl.apply(model, str(DATAPATH / filename))
 
 
 @pytest.mark.parametrize("filename", ["coffee-machine.yml"])
@@ -643,7 +678,7 @@ def test_apply_fails_on_missing_metadata(
     with pytest.raises(ValueError) as error:
         decl.apply(model, io.StringIO(yml), strict=True)
 
-    assert str(error.value) == "No metadata found."
+    assert str(error.value) == "No metadata found in provided YAML"
 
 
 def test_cli_applies_a_yaml_and_saves_the_model_back(tmp_path: pathlib.Path):
@@ -651,10 +686,36 @@ def test_cli_applies_a_yaml_and_saves_the_model_back(tmp_path: pathlib.Path):
     model = tmp_path / "model" / TEST_MODEL
     semmodel = model.with_suffix(".capella")
     oldhash = hashlib.sha256(semmodel.read_bytes()).hexdigest()
-    declfile = patch_metadata(DATAPATH / "coffee-machine.yml", model, tmp_path)
+    declfile = DATAPATH / "coffee-machine.yml"
 
     cli = subprocess.run(
         [sys.executable, "-mcapellambse.decl", f"--model={model}", declfile],
+        cwd=INSTALLED_PACKAGE.parent,
+        check=False,
+    )
+
+    assert cli.returncode == 0, "CLI process exited unsuccessfully"
+    newhash = hashlib.sha256(semmodel.read_bytes()).hexdigest()
+    assert newhash != oldhash, "Files on disk didn't change"
+
+
+def test_cli_applies_a_yaml_with_metadata_and_saves_the_model_back(
+    tmp_path: pathlib.Path,
+):
+    shutil.copytree(MODELPATH, tmp_path / "model")
+    model = tmp_path / "model" / TEST_MODEL
+    semmodel = model.with_suffix(".capella")
+    oldhash = hashlib.sha256(semmodel.read_bytes()).hexdigest()
+    declfile = patch_metadata(DATAPATH / "coffee-machine.yml", model, tmp_path)
+
+    cli = subprocess.run(
+        [
+            sys.executable,
+            "-mcapellambse.decl",
+            f"--model={model}",
+            "--strict",
+            declfile,
+        ],
         cwd=INSTALLED_PACKAGE.parent,
         check=False,
     )
@@ -669,7 +730,9 @@ def patch_metadata(
 ) -> pathlib.Path:
     model = capellambse.MelodyModel(model_path)
     metadata, instructions = decl.load_with_metadata(decl_path)
-    metadata["capellambse"] = imm.version("capellambse")
+    metadata["written_by"] = {
+        "capellambse_version": imm.version("capellambse")
+    }
     metadata["model"]["version"] = model.info.rev_hash
     metadata["model"]["url"] = model.info.url
     yml = decl.dump(instructions, metadata=metadata)
