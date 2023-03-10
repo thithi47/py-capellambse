@@ -107,8 +107,10 @@ def load_with_metadata(
 
     Returns
     -------
-    metadata, instructions
-        A metadata dictionary and a list of instruction dictionaries.
+    metadata
+        A metadata dictionary.
+    instructions
+        A list of instruction dictionaries.
     """
     if hasattr(file, "read"):
         file = t.cast(t.IO[str], file)
@@ -223,11 +225,13 @@ def _metadata_matches_modelinfo(
     received = av.AwesomeVersion(version)
     try:
         if current < received:
-            raise ValueError(
+            msg = (
                 "Unsupported YAML: The version of the installed"
                 f" capellambse({current}) is lower than the version with which"
                 f" the YAMLwas written with ({received})."
             )
+            logger.warning(msg)
+            raise ValueError(msg)
     except av.AwesomeVersionCompareException:
         raise ValueError(
             "Unsupported YAML: Can't find capellambse in metadata"
@@ -239,20 +243,27 @@ def _metadata_matches_modelinfo(
     if (referencing := metadata.get("referencing")) != "explicit":
         raise ValueError(
             "Unsupported YAML: Only explicit YAMLs are supported."
-            f" Got 'referencing: {referencing}'."
+            f" Got 'referencing: {referencing}'"
         )
 
     model_metadata = metadata.get("model", {})
     if (hash := model_metadata.get("version")) != model.info.rev_hash:
         raise ValueError(
             "Unsupported YAML: Model revision hash isn't matching. Got"
-            f" {hash!r} but current is {model.info.rev_hash!r}."
+            f" {hash!r} but current is {model.info.rev_hash!r}"
         )
 
     if (url := model_metadata.get("url")) != model.info.url:
         raise ValueError(
             "Unsupported YAML: Model URL isn't matching. Got"
-            f" {url!r} but current is {model.info.url!r}."
+            f" {url!r} but current is {model.info.url!r}"
+        )
+
+    entrypoint = model_metadata.get("entrypoint")
+    if entrypoint != model.info.entrypoint:
+        raise ValueError(
+            "Unsupported YAML: Model entrypoint isn't matching. Got"
+            f" {entrypoint!r} but current is {model.info.entrypoint!r}"
         )
 
 

@@ -73,22 +73,24 @@ Metadata
 .. versionadded:: 0.5.16
    Added metadata document to the declarative modelling YAML.
 
-The metadata has the following format:
+The metadata section is optional and has the following format:
 
 .. code-block:: yaml
 
-   capellambse: 1.0.0
    model:
      version: 2fd4e1c67a2d28fced849ee1bb76e7391b93eb12
      url: https://example.com/model.git
-   generator: Declarative Modelling Generator 1.0.0
+     entrypoint: path/to/model.aird
+   written_by:
+     capellambse_version: 1.0.0
+     generator: Declarative Modelling Generator 1.0.0
 
 It gives information about which model the declarative modelling YAML file
 wants to change, with which capellambse version and generator it was written
-with and the referencing-type. A versioned model (e.g. using a git URL) can be
-uniquely identified by its revision and the repository ``url``. These values
-are checked against the ``model.info`` during ``decl.apply`` when the
-``strict`` parameter is ``True`` (``False`` per default).
+with. A versioned model (e.g. using a git URL) can be uniquely identified by
+its revision and the repository ``url``. These values are checked against the
+``model.info`` during ``decl.apply`` when the ``strict`` parameter is ``True``
+(``False`` per default).
 
 Instructions in the declarative modelling YAML may need additional instructions
 for references such that the changes are correctly displayed in Capella. E.g.

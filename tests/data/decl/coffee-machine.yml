@@ -4,6 +4,7 @@
 model:
   version: 1234abcd
   url: https://example.com/model.git
+  entrypoint: path/to/model.aird
 written_by:
   capellambse_version: 1.0.0
 referencing: explicit

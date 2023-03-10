@@ -1279,6 +1279,7 @@ class MelodyLoader:
         info.capella_version = info.viewpoints.get(
             "org.polarsys.capella.core.viewpoint", "UNKNOWN"
         )
+        info.entrypoint = str(self.entrypoint)
         return info
 
     @contextlib.contextmanager

@@ -37,7 +37,11 @@ METADATA = {
         "capellambse_version": "1.0.0",
         "generator": "Example 1.0.0",
     },
-    "model": {"url": "https://example.invalid", "version": "12345678"},
+    "model": {
+        "url": "https://example.invalid",
+        "version": "12345678",
+        "entrypoint": "path/to/model.aird",
+    },
     "referencing": "explicit",
 }
 
@@ -100,6 +104,7 @@ class TestDumpLoad:
             model:
               version: "12345678"
               url: https://example.invalid
+              entrypoint: path/to/model.aird
             referencing: explicit
             ---
             - parent: !uuid {uuid!r}
@@ -617,6 +622,24 @@ class TestMetadataMatchesModelinfo:
                 "https://example.com/models/456",
                 id="Model URL not matching",
             ),
+            pytest.param(
+                {
+                    "model": {
+                        "url": None,
+                        "version": None,
+                        "entrypoint": "other/path/to/model.aird",
+                    },
+                    "written_by": {
+                        "capellambse_version": imm.version("capellambse")
+                    },
+                    "referencing": "explicit",
+                },
+                lambda: modelinfo.ModelInfo(
+                    rev_hash=None, url=None, entrypoint="path/to/model.aird"
+                ),
+                "other/path/to/model.aird",
+                id="Model entrypoint not matching",
+            ),
         ],
     )
     def test_meta_with_ModelInfo_patching(
@@ -641,13 +664,20 @@ class TestMetadataMatchesModelinfo:
     ):
         url = "https://example.com/models/123"
         rev_hash = "abc123"
+        entrypoint = "path/to/model.aird"
         monkeypatch.setattr(
             model._loader,
             "get_model_info",
-            lambda: modelinfo.ModelInfo(url=url, rev_hash=rev_hash),
+            lambda: modelinfo.ModelInfo(
+                url=url, rev_hash=rev_hash, entrypoint=entrypoint
+            ),
         )
         metadata = {
-            "model": {"url": url, "version": rev_hash},
+            "model": {
+                "url": url,
+                "version": rev_hash,
+                "entrypoint": entrypoint,
+            },
             "written_by": {"capellambse_version": imm.version("capellambse")},
             "referencing": "explicit",
         }
@@ -735,6 +765,7 @@ def patch_metadata(
     }
     metadata["model"]["version"] = model.info.rev_hash
     metadata["model"]["url"] = model.info.url
+    metadata["model"]["entrypoint"] = model.info.entrypoint
     yml = decl.dump(instructions, metadata=metadata)
     new_path = tmp_path / decl_path.name
     new_path.write_text(yml, encoding="utf8")
