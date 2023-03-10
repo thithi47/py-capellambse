@@ -383,7 +383,26 @@ class MelodyModel:
             index into the list that was found. Otherwise the index is
             None.
         """
-        for obj in self.search():
+        if target._model is not self:
+            raise ValueError(
+                "Cannot find references to objects from different models"
+            )
+
+        uuid = getattr(target, "uuid", None)
+        if not uuid:
+            raise ValueError(
+                "Cannot find references to an object without a '.uuid'"
+            )
+
+        for elem in self._loader.xpath(
+            f"//*[@*[contains(., '#{uuid}')] | */@*[contains(., '#{uuid}')]]",
+            roots=[
+                i.root
+                for i in self._loader.trees.values()
+                if i.fragment_type != loader.FragmentType.VISUAL
+            ],
+        ):
+            obj = GenericElement.from_model(self, elem)
             for attr in _reference_attributes(type(obj)):
                 if attr.startswith("_"):
                     continue

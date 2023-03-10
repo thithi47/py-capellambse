@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 __all__ = [
+    "InvalidModificationError",
     "NonUniqueMemberError",
     "Accessor",
     "DeprecatedAccessor",
@@ -26,7 +27,9 @@ __all__ = [
 
 import abc
 import collections.abc as cabc
+import contextlib
 import itertools
+import logging
 import operator
 import sys
 import typing as t
@@ -43,6 +46,12 @@ from . import XTYPE_HANDLERS, S, T, U, build_xtype, element
 
 _NOT_SPECIFIED = object()
 "Used to detect unspecified optional arguments"
+
+LOGGER = logging.getLogger(__name__)
+
+
+class InvalidModificationError(RuntimeError):
+    """Raised when a modification would result in an invalid model."""
 
 
 class NonUniqueMemberError(ValueError):
@@ -314,6 +323,95 @@ class WritableAccessor(Accessor[T], metaclass=abc.ABCMeta):
 
         objtype = match_xt(objtype, candidate_classes)
         return candidate_classes[objtype], objtype
+
+    def purge_references(
+        self, obj: element.ModelObject, target: element.ModelObject
+    ) -> contextlib.AbstractContextManager[None]:
+        """Purge references to the given object from the model.
+
+        This method is called while deleting physical objects, in order
+        to get rid of references to that object. Reference purging is
+        done in two steps, which is why this method returns a context
+        manager.
+
+        The first step, executed by the ``__enter__`` method, collects
+        references to the target and ensures that deleting them would
+        result in a valid model. If any validity constraints would be
+        violated, an exception is raised to indicate as such, and the
+        whole operation is aborted. This is also when the relevant
+        "capellambse.delete" audit events are fired for each reference.
+
+        Once all ``__enter__`` methods have been called, the target
+        object is deleted from the model. Then all ``__exit__`` methods
+        are called, which triggers the actual deletion of all previously
+        discovered references.
+
+        As per the context manager protocol, ``__exit__`` will always be
+        called after ``__enter__``, even if the operation is to be
+        aborted. The ``__exit__`` method must therefore inspect whether
+        an exception was passed in or not in order to know whether the
+        operation succeeded.
+
+        In order to not confuse other context managers and keep the
+        model consistent, ``__exit__`` must not raise any further
+        exceptions. Exceptions should instead be logged to stderr, for
+        example by using the
+        :external:py:meth:`logging.Logger.exception` facility.
+
+        The ``purge_references`` method will only be called for Accessor
+        instances that actually contain a reference.
+
+        Parameters
+        ----------
+        obj
+            The model object to purge references from.
+        target
+            The object that is to be deleted; references to this object
+            will be purged.
+
+        Returns
+        -------
+        contextlib.AbstractContextManager
+            A context manager that deals with purging references in a
+            transactional manner.
+
+        Raises
+        ------
+        InvalidModificationError
+            Raised by the returned context manager's ``__enter__``
+            method if the attempted modification would result in an
+            invalid model. Note that it is generally preferred to allow
+            the operation and take the necessary steps to keep the model
+            consistent, if possible. This can be achieved for example by
+            deleting dependent objects along with the original deletion
+            target.
+        Exception
+            Any exception may be raised before ``__enter__`` returns in
+            order to abort the transaction and prevent the ``obj`` from
+            being deleted. No exceptions must be raised by ``__exit__``.
+
+        Examples
+        --------
+        A simple implementation for purging a single object reference
+        could look like this:
+
+        .. code-block:: python
+
+           @contextlib.contextmanager
+           def purge_references(self, obj, target):
+               assert self.__get__(obj, type(obj)) == target
+               sys.audit("capellambse.delete", obj, self.__name__, None)
+
+               yield
+
+               try:
+                   self.__delete__(obj)
+               except Exception:
+                   LOGGER.exception("Could not purge a dangling reference")
+        """
+        raise NotImplementedError(
+            f"{type(self).__name__} does not support purging references"
+        )
 
 
 class PhysicalAccessor(Accessor[T]):
@@ -600,8 +698,20 @@ class DirectProxyAccessor(WritableAccessor[T], PhysicalAccessor[T]):
     ) -> None:
         assert obj._model is elmlist._model
 
-        elmlist._model._loader.idcache_remove(obj._element)
-        elmlist._parent._element.remove(obj._element)
+        with contextlib.ExitStack() as stack:
+            for ref, attr, _ in elmlist._model.find_references(obj):
+                acc = getattr(type(ref), attr)
+                if acc is self:
+                    continue
+                stack.enter_context(acc.purge_references(ref, obj))
+
+            elmlist._model._loader.idcache_remove(obj._element)
+            elmlist._parent._element.remove(obj._element)
+
+    def purge_references(
+        self, obj: element.ModelObject, target: element.ModelObject
+    ) -> t.NoReturn:
+        raise TypeError("Cannot purge references here")
 
 
 class DeepProxyAccessor(DirectProxyAccessor[T]):
@@ -802,6 +912,27 @@ class LinkAccessor(WritableAccessor[T], PhysicalAccessor[T]):
         else:
             raise ValueError("Cannot delete: Target object not in this list")
 
+    @contextlib.contextmanager
+    def purge_references(
+        self, obj: element.ModelObject, target: element.ModelObject
+    ) -> cabc.Generator[None, None, None]:
+        purge: list[etree._Element] = []
+        for i, ref in enumerate(self.__find_refs(obj)):
+            if self.__follow_ref(obj, ref) is target._element:
+                sys.audit("capellambse.delete", obj, self.__name__, i)
+                purge.append(ref)
+
+        yield
+
+        for ref in purge:
+            try:
+                parent = ref.getparent()
+                if parent is None:
+                    continue
+                parent.remove(ref)
+            except Exception:
+                LOGGER.exception("Cannot purge dangling ref object %r", ref)
+
 
 class AttrProxyAccessor(WritableAccessor[T], PhysicalAccessor[T]):
     """Provides access to elements that are linked in an attribute."""
@@ -906,6 +1037,32 @@ class AttrProxyAccessor(WritableAccessor[T], PhysicalAccessor[T]):
             parts.append(link)
         obj._element.set(self.attr, " ".join(parts))
 
+    @contextlib.contextmanager
+    def purge_references(
+        self, obj: element.ModelObject, target: element.ModelObject
+    ) -> cabc.Generator[None, None, None]:
+        if self.aslist is not None:
+            remaining: list[T] = []
+            for i, member in enumerate(getattr(obj, self.__name__)):
+                if member == target:
+                    sys.audit("capellambse.delete", obj, self.__name__, i)
+                else:
+                    remaining.append(member)
+            yield
+            try:
+                self.__set_links(obj, remaining)
+            except Exception:
+                LOGGER.exception("Cannot write new list of targets")
+        else:
+            sys.audit("capellambse.delete", obj, self.__name__, None)
+            yield
+            try:
+                del obj._element.attrib[self.attr]
+            except KeyError:
+                pass
+            except Exception:
+                LOGGER.exception("Cannot update link target")
+
 
 class PhysicalLinkEndsAccessor(AttrProxyAccessor[T]):
     def __init__(
@@ -918,6 +1075,13 @@ class PhysicalLinkEndsAccessor(AttrProxyAccessor[T]):
         super().__init__(class_, attr, aslist=aslist)
         assert self.aslist is not None
         self.aslist.fixed_length = 2
+
+    @contextlib.contextmanager
+    def purge_references(
+        self, obj: element.ModelObject, target: element.ModelObject
+    ) -> cabc.Generator[None, None, None]:
+        # TODO This should instead delete the link
+        raise NotImplementedError("Cannot purge references from PhysicalLink")
 
 
 class IndexAccessor(Accessor[T]):
