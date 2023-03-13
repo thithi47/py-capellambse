@@ -755,6 +755,20 @@ class TestReqIFModification:
 
         assert evattr.values == values
 
+    def test_delete_values_on_EnumerationValueAttribute_purges_reference(
+        self,
+        model: capellambse.MelodyModel,
+    ):
+        attr_value = model.by_uuid("148bdf2f-6dc2-4a83-833b-596886ce5b07")
+        number_values = len(attr_value.values)
+        assert number_values > 1, "There is less than 1 option"
+        old_value = attr_value.values[0]
+
+        del attr_value.values[0]
+
+        assert number_values > len(attr_value.values)
+        assert old_value not in attr_value.values
+
     def test_create_RequirementType_AttributeDefinition_creation(
         self, model: capellambse.MelodyModel
     ):
