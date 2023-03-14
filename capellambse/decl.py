@@ -218,7 +218,6 @@ def _validate_metadata(
 ) -> None:
     if writer_metadata := metadata.get("written_by"):
         version = writer_metadata.get("capellambse_version", "")
-        generator = writer_metadata.get("generator", "")
     else:
         raise ValueError(
             "Unsupported YAML: Can't find 'written_by' in metadata"
@@ -263,9 +262,6 @@ def _validate_metadata(
             "Unsupported YAML: Cannot check installed capellambse version"
             f" {current!r} against metadata {version!r}"
         ) from None
-
-    if not generator:
-        logger.info("Unknown declarative YAML generator")
 
     if (referencing := metadata.get("referencing")) != "implicit":
         raise ValueError(

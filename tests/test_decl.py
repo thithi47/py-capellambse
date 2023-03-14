@@ -5,7 +5,6 @@ from __future__ import annotations
 import collections.abc as cabc
 import hashlib
 import io
-import logging
 import pathlib
 import shutil
 import subprocess
@@ -663,37 +662,6 @@ class TestMetadataMatchesModelinfo:
             decl._validate_metadata(model, metadata)
 
         assert expected in str(excinfo.value)
-
-    @staticmethod
-    def test_model_generator_not_in_metadata_logs_info(
-        model: capellambse.MelodyModel,
-        monkeypatch: pytest.MonkeyPatch,
-        caplog: pytest.LogCaptureFixture,
-    ):
-        url = "https://example.com/models/123"
-        rev_hash = "abc123"
-        entrypoint = pathlib.PurePosixPath("path/to/model.aird")
-        monkeypatch.setattr(
-            model._loader,
-            "get_model_info",
-            lambda: modelinfo.ModelInfo(
-                url=url, rev_hash=rev_hash, entrypoint=entrypoint
-            ),
-        )
-        metadata = {
-            "model": {
-                "url": url,
-                "version": rev_hash,
-                "entrypoint": entrypoint,
-            },
-            "written_by": {"capellambse_version": imm.version("capellambse")},
-            "referencing": "implicit",
-        }
-
-        with caplog.at_level(logging.INFO):
-            decl._validate_metadata(model, metadata)
-
-        assert "Unknown declarative YAML generator" in caplog.text
 
 
 @pytest.mark.parametrize("filename", ["coffee-machine.yml"])
