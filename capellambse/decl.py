@@ -68,6 +68,8 @@ def dump(
     --------
     capellambse.decl.load_with_metadata :
         Load a declarative modelling YAML file with metadata.
+    capellambse.decl.load :
+        Load a declarative modelling YAML file neglecting metadata.
 
     Returns
     -------
