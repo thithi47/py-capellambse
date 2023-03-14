@@ -89,8 +89,24 @@ class TestDumpLoad:
     @staticmethod
     def test_dumping_with_metadata():
         data = [{"parent": decl.UUIDReference(ROOT_FUNCTION)}]
+        expected = textwrap.dedent(
+            f"""\
+            model:
+              entrypoint: path/to/model.aird
+              url: https://example.invalid
+              version: '12345678'
+            referencing: explicit
+            written_by:
+              capellambse_version: 1.0.0
+              generator: Example 1.0.0
+            ---
+            - parent: !uuid {ROOT_FUNCTION!r}
+            """
+        )
 
-        decl.dump(data, metadata=METADATA)
+        yml = decl.dump(data, metadata=METADATA)
+
+        assert yml == expected
 
     @staticmethod
     def test_loading_with_metadata():
@@ -658,10 +674,8 @@ class TestMetadataMatchesModelinfo:
     ):
         monkeypatch.setattr(model._loader, "get_model_info", info_getter)
 
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(ValueError, match=expected):
             decl._validate_metadata(model, metadata)
-
-        assert expected in str(excinfo.value)
 
 
 @pytest.mark.parametrize("filename", ["coffee-machine.yml"])
@@ -670,21 +684,14 @@ def test_full_example(model: capellambse.MelodyModel, filename: str):
 
 
 @pytest.mark.parametrize("filename", ["coffee-machine.yml"])
-def test_full_example_(model: capellambse.MelodyModel, filename: str):
-    decl.apply(model, str(DATAPATH / filename))
-
-
-@pytest.mark.parametrize("filename", ["coffee-machine.yml"])
-def test_apply_fails_on_missing_metadata(
+def test_strict_apply_fails_on_missing_metadata(
     model: capellambse.MelodyModel, filename: str
 ):
     _, instructions = decl.load_with_metadata(DATAPATH / filename)
     yml = decl.dump(instructions)
 
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(ValueError, match="No metadata found in provided YAML"):
         decl.apply(model, io.StringIO(yml), strict=True)
-
-    assert str(error.value) == "No metadata found in provided YAML"
 
 
 def test_cli_applies_a_yaml_and_saves_the_model_back(tmp_path: pathlib.Path):
