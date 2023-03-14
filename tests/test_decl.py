@@ -624,6 +624,16 @@ class TestMetadataMatchesModelinfo:
                 id="Current version less than installed",
             ),
             pytest.param(
+                {"written_by": {"capellambse_version": "123.."}},
+                lambda: modelinfo.ModelInfo(
+                    rev_hash=None,
+                    url=None,
+                    entrypoint=pathlib.PurePosixPath("."),
+                ),
+                "123..",
+                id="Malformatted (not PEP440) version",
+            ),
+            pytest.param(
                 {
                     "written_by": {
                         "capellambse_version": imm.version("capellambse")

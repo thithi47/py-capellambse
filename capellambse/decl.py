@@ -31,6 +31,7 @@ import importlib.metadata as imm
 import logging
 import os
 import pathlib
+import re
 import sys
 import typing as t
 import warnings
@@ -230,7 +231,7 @@ def _validate_metadata(
             f" {url!r} but current is {model.info.url!r}"
         )
 
-    entrypoint = pathlib.Path(model_metadata.get("entrypoint", ""))
+    entrypoint = pathlib.PurePosixPath(model_metadata.get("entrypoint", ""))
     if entrypoint != model.info.entrypoint:
         raise ValueError(
             "Unsupported YAML: Model entrypoint isn't matching. Got"
@@ -246,14 +247,17 @@ def _validate_metadata(
     current = av.AwesomeVersion(imm.version("capellambse"))
     received = av.AwesomeVersion(version)
     try:
+        if not _is_canonical(version):
+            raise ValueError(
+                f"Malformatted version number in metadata: {version}"
+            )
+
         if current < received:
-            msg = (
+            raise ValueError(
                 "Unsupported YAML: The version of the installed"
                 f" capellambse({current}) is lower than the version with which"
                 f" the YAMLwas written with ({received})."
             )
-            logger.warning(msg)
-            raise ValueError(msg)
     except av.AwesomeVersionCompareException:
         raise ValueError(
             "Unsupported YAML: Cannot check installed capellambse version"
@@ -268,6 +272,20 @@ def _validate_metadata(
             "Unsupported YAML: Only implict YAMLs are supported for now."
             f" Got 'referencing: {referencing}'"
         )
+
+
+def _is_canonical(version: str) -> bool:
+    """Check if given version aligns with PEP440.
+
+    See Also
+    --------
+    https://peps.python.org/pep-0440/#appendix-b-parsing-version-strings-with-regular-expressions
+    """
+    pep440_ptrn = re.compile(
+        r"^([1-9][0-9]*!)?(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))*((a|b|rc)"
+        r"(0|[1-9][0-9]*))?(\.post(0|[1-9][0-9]*))?(\.dev(0|[1-9][0-9]*))?$"
+    )
+    return pep440_ptrn.match(version) is not None
 
 
 def _operate_create(
