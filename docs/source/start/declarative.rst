@@ -70,8 +70,9 @@ Format description
 
 Metadata
 --------
+
 .. versionadded:: 0.5.16
-   Added metadata document to the declarative modelling YAML.
+   Added metadata section to the declarative modelling YAML.
 
 The metadata section is optional and has the following format:
 
@@ -91,11 +92,6 @@ with. A versioned model (e.g. using a git URL) can be uniquely identified by
 its revision and the repository ``url``. These values are checked against the
 ``model.info`` during ``decl.apply`` when the ``strict`` parameter is ``True``
 (``False`` per default).
-
-Instructions in the declarative modelling YAML may need additional instructions
-for references such that the changes are correctly displayed in Capella. E.g.
-a delete instruction of a port should be followed by a delete instruction of
-the connected exchanges, since an exchange always needs a source and a target.
 
 Instructions
 ------------

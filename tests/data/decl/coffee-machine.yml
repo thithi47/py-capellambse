@@ -7,7 +7,7 @@ model:
   entrypoint: path/to/model.aird
 written_by:
   capellambse_version: 1.0.0
-referencing: explicit
+referencing: implicit
 ---
 - parent: !uuid 0d2edb8f-fa34-4e73-89ec-fb9a63001440 # root logical component
   extend:

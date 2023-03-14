@@ -560,51 +560,8 @@ class TestApplyDelete:
 class TestMetadataMatchesModelinfo:
     @staticmethod
     @pytest.mark.parametrize(
-        ["metadata", "expected"],
-        [
-            pytest.param(
-                {"written_by": {"capellambse_version": "99999.9.9"}},
-                imm.version("capellambse"),
-                id="Current version less than installed",
-            ),
-            pytest.param(
-                {
-                    "written_by": {
-                        "capellambse_version": imm.version("capellambse")
-                    },
-                    "referencing": "implicit",
-                },
-                "implicit",
-                id="Referencing not explicit",
-            ),
-        ],
-    )
-    def test_metadata_checks(
-        model: capellambse.MelodyModel,
-        metadata: dict[str, t.Any],
-        expected: str,
-    ):
-        with pytest.raises(ValueError) as excinfo:
-            decl._metadata_matches_modelinfo(model, metadata)
-
-        assert expected in str(excinfo.value)
-
-    @staticmethod
-    @pytest.mark.parametrize(
         ["metadata", "info_getter", "expected"],
         [
-            pytest.param(
-                {
-                    "model": {"version": "def456"},
-                    "written_by": {
-                        "capellambse_version": imm.version("capellambse")
-                    },
-                    "referencing": "explicit",
-                },
-                lambda: modelinfo.ModelInfo(rev_hash="abc123"),
-                "def456",
-                id="Model rev hash not matching",
-            ),
             pytest.param(
                 {
                     "model": {
@@ -635,14 +592,55 @@ class TestMetadataMatchesModelinfo:
                     "referencing": "explicit",
                 },
                 lambda: modelinfo.ModelInfo(
-                    rev_hash=None, url=None, entrypoint="path/to/model.aird"
+                    rev_hash=None,
+                    url=None,
+                    entrypoint=pathlib.PurePosixPath("path/to/model.aird"),
                 ),
                 "other/path/to/model.aird",
                 id="Model entrypoint not matching",
             ),
+            pytest.param(
+                {
+                    "model": {"version": "def456"},
+                    "written_by": {
+                        "capellambse_version": imm.version("capellambse")
+                    },
+                    "referencing": "explicit",
+                },
+                lambda: modelinfo.ModelInfo(
+                    rev_hash="abc123", entrypoint=pathlib.PurePosixPath(".")
+                ),
+                "def456",
+                id="Model rev hash not matching",
+            ),
+            pytest.param(
+                {"written_by": {"capellambse_version": "99999.9.9"}},
+                lambda: modelinfo.ModelInfo(
+                    rev_hash=None,
+                    url=None,
+                    entrypoint=pathlib.PurePosixPath("."),
+                ),
+                imm.version("capellambse"),
+                id="Current version less than installed",
+            ),
+            pytest.param(
+                {
+                    "written_by": {
+                        "capellambse_version": imm.version("capellambse")
+                    },
+                    "referencing": "explicit",
+                },
+                lambda: modelinfo.ModelInfo(
+                    rev_hash=None,
+                    url=None,
+                    entrypoint=pathlib.PurePosixPath("."),
+                ),
+                "explicit",
+                id="Referencing not implicit",
+            ),
         ],
     )
-    def test_meta_with_ModelInfo_patching(
+    def test__validate_metadata(
         model: capellambse.MelodyModel,
         monkeypatch: pytest.MonkeyPatch,
         metadata: dict[str, t.Any],
@@ -652,7 +650,7 @@ class TestMetadataMatchesModelinfo:
         monkeypatch.setattr(model._loader, "get_model_info", info_getter)
 
         with pytest.raises(ValueError) as excinfo:
-            decl._metadata_matches_modelinfo(model, metadata)
+            decl._validate_metadata(model, metadata)
 
         assert expected in str(excinfo.value)
 
@@ -664,7 +662,7 @@ class TestMetadataMatchesModelinfo:
     ):
         url = "https://example.com/models/123"
         rev_hash = "abc123"
-        entrypoint = "path/to/model.aird"
+        entrypoint = pathlib.PurePosixPath("path/to/model.aird")
         monkeypatch.setattr(
             model._loader,
             "get_model_info",
@@ -679,11 +677,11 @@ class TestMetadataMatchesModelinfo:
                 "entrypoint": entrypoint,
             },
             "written_by": {"capellambse_version": imm.version("capellambse")},
-            "referencing": "explicit",
+            "referencing": "implicit",
         }
 
         with caplog.at_level(logging.INFO):
-            decl._metadata_matches_modelinfo(model, metadata)
+            decl._validate_metadata(model, metadata)
 
         assert "Unknown declarative YAML generator" in caplog.text
 
@@ -765,7 +763,7 @@ def patch_metadata(
     }
     metadata["model"]["version"] = model.info.rev_hash
     metadata["model"]["url"] = model.info.url
-    metadata["model"]["entrypoint"] = model.info.entrypoint
+    metadata["model"]["entrypoint"] = str(model.info.entrypoint)
     yml = decl.dump(instructions, metadata=metadata)
     new_path = tmp_path / decl_path.name
     new_path.write_text(yml, encoding="utf8")

@@ -27,14 +27,15 @@ import collections
 import collections.abc as cabc
 import contextlib
 import dataclasses
+import importlib.metadata as imm
 import logging
 import os
+import pathlib
 import sys
 import typing as t
 import warnings
-from importlib import metadata as imm
 
-import awesomeversion as av  # type: ignore[import]
+import awesomeversion as av
 import yaml
 
 import capellambse
@@ -73,7 +74,7 @@ def dump(
         The instructions and optionally metadata dumped to YAML in
         string format.
     """
-    if metadata is None:
+    if not metadata:
         return yaml.dump(instructions, Dumper=YDMDumper)
     return yaml.dump_all([metadata, instructions], Dumper=YDMDumper)
 
@@ -114,7 +115,7 @@ def load_with_metadata(
     """
     if hasattr(file, "read"):
         file = t.cast(t.IO[str], file)
-        ctx: t.ContextManager[t.IO[str] | str] = contextlib.nullcontext(file)
+        ctx: t.ContextManager[t.IO[str]] = contextlib.nullcontext(file)
     else:
         assert not isinstance(file, t.IO)
         ctx = open(file, encoding="utf-8")
@@ -173,15 +174,16 @@ def apply(
     if not metadata:
         if strict:
             raise ValueError("No metadata found in provided YAML")
-        else:
-            logger.info("No metadata found in provided YAML")
     try:
-        _metadata_matches_modelinfo(model, metadata)
-    except ValueError:
+        _validate_metadata(model, metadata)
+    except ValueError as error:
         if strict:
             raise
         else:
-            logger.info("Declared metadata does not match provided model")
+            logger.info(
+                "Declared metadata does not match provided model: %s",
+                error.args[0],
+            )
 
     while instructions:
         instruction = instructions.popleft()
@@ -210,7 +212,7 @@ def apply(
         raise UnfulfilledPromisesError(frozenset(deferred))
 
 
-def _metadata_matches_modelinfo(
+def _validate_metadata(
     model: capellambse.MelodyModel, metadata: dict[str, t.Any]
 ) -> None:
     if writer_metadata := metadata.get("written_by"):
@@ -219,6 +221,26 @@ def _metadata_matches_modelinfo(
     else:
         raise ValueError(
             "Unsupported YAML: Can't find 'written_by' in metadata"
+        )
+
+    model_metadata = metadata.get("model", {})
+    if (url := model_metadata.get("url")) != model.info.url:
+        raise ValueError(
+            "Unsupported YAML: Model URL isn't matching. Got"
+            f" {url!r} but current is {model.info.url!r}"
+        )
+
+    entrypoint = pathlib.Path(model_metadata.get("entrypoint", ""))
+    if entrypoint != model.info.entrypoint:
+        raise ValueError(
+            "Unsupported YAML: Model entrypoint isn't matching. Got"
+            f" {entrypoint!r} but current is {model.info.entrypoint!r}"
+        )
+
+    if (hash := model_metadata.get("version")) != model.info.rev_hash:
+        raise ValueError(
+            "Unsupported YAML: Model revision hash isn't matching. Got"
+            f" {hash!r} but current is {model.info.rev_hash!r}"
         )
 
     current = av.AwesomeVersion(imm.version("capellambse"))
@@ -234,36 +256,17 @@ def _metadata_matches_modelinfo(
             raise ValueError(msg)
     except av.AwesomeVersionCompareException:
         raise ValueError(
-            "Unsupported YAML: Can't find capellambse in metadata"
+            "Unsupported YAML: Cannot check installed capellambse version"
+            f" {current!r} against metadata {version!r}"
         ) from None
 
     if not generator:
         logger.info("Unknown declarative YAML generator")
 
-    if (referencing := metadata.get("referencing")) != "explicit":
+    if (referencing := metadata.get("referencing")) != "implicit":
         raise ValueError(
-            "Unsupported YAML: Only explicit YAMLs are supported."
+            "Unsupported YAML: Only implict YAMLs are supported for now."
             f" Got 'referencing: {referencing}'"
-        )
-
-    model_metadata = metadata.get("model", {})
-    if (hash := model_metadata.get("version")) != model.info.rev_hash:
-        raise ValueError(
-            "Unsupported YAML: Model revision hash isn't matching. Got"
-            f" {hash!r} but current is {model.info.rev_hash!r}"
-        )
-
-    if (url := model_metadata.get("url")) != model.info.url:
-        raise ValueError(
-            "Unsupported YAML: Model URL isn't matching. Got"
-            f" {url!r} but current is {model.info.url!r}"
-        )
-
-    entrypoint = model_metadata.get("entrypoint")
-    if entrypoint != model.info.entrypoint:
-        raise ValueError(
-            "Unsupported YAML: Model entrypoint isn't matching. Got"
-            f" {entrypoint!r} but current is {model.info.entrypoint!r}"
         )
 
 
